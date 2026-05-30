@@ -4,6 +4,39 @@ export default async function handler(req, res) {
     }
 
     try {
+        const body = req.body;
+        const messages = body.messages || [];
+        
+        // Ambil pesan terakhir yang dikirim pengguna
+        const lastMessage = messages[messages.length - 1]?.content || "";
+
+        // Regex untuk mendeteksi apakah pesan mengandung link TikTok
+        const tiktokRegex = /(?:https?:\/\/)?(?:www\.)?(?:tiktok\.com|vt\.tiktok\.com|vm\.tiktok\.com)\/[^\s]+/i;
+        const tiktokMatch = lastMessage.match(tiktokRegex);
+
+        // JIKA ADA LINK TIKTOK -> Eksekusi API Downloader
+        if (tiktokMatch) {
+            const tiktokUrl = tiktokMatch[0];
+            
+            try {
+                const tkRes = await fetch(`https://api.siputzx.my.id/api/d/tiktok?url=${encodeURIComponent(tiktokUrl)}`);
+                const tkData = await tkRes.json();
+
+                if (tkData.status && tkData.data) {
+                    // Kembalikan flag khusus agar HTML tahu ini adalah respon TikTok
+                    return res.status(200).json({
+                        isTiktok: true,
+                        tiktokData: tkData.data
+                    });
+                } else {
+                    return res.status(200).json({ text: "S-sayang... Vierra gagal mendownload video TikToknya, linknya bermasalah kah?" });
+                }
+            } catch (err) {
+                return res.status(200).json({ text: "S-sayang... Vierra gagal nyambung ke server downloader TikTok." });
+            }
+        }
+
+        // JIKA TIDAK ADA LINK TIKTOK -> Lanjut ke AI Chat biasa
         const response = await fetch('https://chateverywhere.app/api/chat/', {
             method: 'POST',
             headers: {
@@ -13,18 +46,15 @@ export default async function handler(req, res) {
                 'Origin': 'https://chateverywhere.app',
                 'Referer': 'https://chateverywhere.app/'
             },
-            body: JSON.stringify(req.body)
+            body: JSON.stringify(body)
         });
 
-        // Ambil data sebagai teks mentah terlebih dahulu untuk menghindari crash saat parsing JSON
         const textData = await response.text();
         
         let finalData;
         try {
-            // Coba ubah menjadi JSON (jika API membalas dengan JSON yang valid)
             finalData = JSON.parse(textData);
         } catch (e) {
-            // Jika gagal (artinya API membalas dengan teks biasa), bungkus ke dalam object
             finalData = { text: textData };
         }
 
@@ -32,6 +62,6 @@ export default async function handler(req, res) {
         
     } catch (error) {
         console.error('API Proxy Error:', error);
-        return res.status(500).json({ error: 'Gagal terhubung ke API AI pihak ketiga.' });
+        return res.status(500).json({ error: 'Gagal terhubung ke server.' });
     }
 }
