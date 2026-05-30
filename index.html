@@ -83,10 +83,13 @@
         .bubble {
             max-width: 80%; width: fit-content; 
             padding: 6px 12px; 
-            font-size: 15px; line-height: 1.4; color: var(--wa-text-main);
+            font-size: 15px; line-height: 1.45; color: var(--wa-text-main);
             position: relative; word-wrap: break-word; 
             display: flex; flex-direction: column;
         }
+        
+        /* Agar format Enter (\n) terbaca di menu chat */
+        .bubble .text { white-space: pre-wrap; } 
 
         .message-row.ai .bubble { background-color: var(--bubble-ai-bg); border-radius: 18px 18px 18px 4px; }
         .message-row.user .bubble { background-color: var(--bubble-user-bg); border-radius: 18px 18px 4px 18px; }
@@ -97,6 +100,25 @@
         }
         .tick-blue { color: #53bdeb; font-size: 14px; font-variation-settings: 'FILL' 1; }
 
+        /* TOMBOL MENU INLINE CSS */
+        .menu-btn {
+            background-color: rgba(40, 66, 151, 0.15); 
+            color: #7b9cff; 
+            border: 1px solid #3753a8;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            margin-bottom: 2px;
+            font-size: 13.5px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+        }
+        .menu-btn:hover { background-color: rgba(40, 66, 151, 0.35); }
+
         /* TIKTOK PREVIEW CARD CSS */
         .tiktok-card {
             width: 260px;
@@ -104,41 +126,18 @@
             gap: 10px;
         }
         .tiktok-thumb {
-            width: 100%;
-            height: 160px;
-            object-fit: cover;
-            border-radius: 12px;
-            background-color: #111;
+            width: 100%; height: 160px; object-fit: cover;
+            border-radius: 12px; background-color: #111;
         }
-        .tiktok-author {
-            font-weight: 600;
-            font-size: 14px;
-            color: #fff;
-            margin-bottom: 2px;
-        }
+        .tiktok-author { font-weight: 600; font-size: 14px; color: #fff; margin-bottom: 2px; }
         .tiktok-title {
-            font-size: 13px;
-            color: #aaa;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+            font-size: 13px; color: #aaa;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
         }
-        .tiktok-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 5px;
-        }
+        .tiktok-actions { display: flex; gap: 8px; margin-top: 5px; }
         .btn-dl {
-            flex: 1;
-            padding: 8px 0;
-            text-align: center;
-            border-radius: 8px;
-            text-decoration: none;
-            color: white;
-            font-size: 13px;
-            font-weight: 600;
-            transition: opacity 0.2s;
+            flex: 1; padding: 8px 0; text-align: center; border-radius: 8px;
+            text-decoration: none; color: white; font-size: 13px; font-weight: 600; transition: opacity 0.2s;
         }
         .btn-dl:hover { opacity: 0.8; }
         .btn-dl.sd { background-color: #444; }
@@ -178,36 +177,20 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.6);
             display: flex; justify-content: center; align-items: center;
-            z-index: 1000;
-            opacity: 0; visibility: hidden;
+            z-index: 1000; opacity: 0; visibility: hidden;
             transition: opacity 0.3s ease, visibility 0.3s ease;
         }
-        .modal-overlay.active {
-            opacity: 1; visibility: visible;
-        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
         .modal-box {
-            background-color: var(--new-input-bg);
-            width: 85%; max-width: 320px;
-            border-radius: 16px; padding: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            transform: translateY(20px) scale(0.95);
-            transition: transform 0.3s ease;
-            color: var(--wa-text-main);
-            text-align: center;
+            background-color: var(--new-input-bg); width: 85%; max-width: 320px;
+            border-radius: 16px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transform: translateY(20px) scale(0.95); transition: transform 0.3s ease;
+            color: var(--wa-text-main); text-align: center;
         }
-        .modal-overlay.active .modal-box {
-            transform: translateY(0) scale(1);
-        }
-        .modal-title { 
-            font-size: 18px; font-weight: 600; margin-bottom: 12px; 
-            color: #ff6b6b; /* Warna aksen merah muda */
-        }
-        .modal-text { 
-            font-size: 14.5px; color: #ccc; margin-bottom: 24px; line-height: 1.5; 
-        }
-        .modal-actions { 
-            display: flex; gap: 12px; 
-        }
+        .modal-overlay.active .modal-box { transform: translateY(0) scale(1); }
+        .modal-title { font-size: 18px; font-weight: 600; margin-bottom: 12px; color: #ff6b6b; }
+        .modal-text { font-size: 14.5px; color: #ccc; margin-bottom: 24px; line-height: 1.5; }
+        .modal-actions { display: flex; gap: 12px; }
         .modal-btn {
             flex: 1; padding: 12px 0; border: none; border-radius: 10px;
             font-size: 14.5px; font-weight: 600; cursor: pointer; transition: 0.2s;
@@ -245,7 +228,7 @@
     <div class="input-area">
         <div class="input-wrapper">
             <span class="material-symbols-rounded" style="font-size: 28px; color: #aaa;">add</span>
-            <input type="text" id="input" placeholder="Ketik pesan atau link TikTok..." autocomplete="off">
+            <input type="text" id="input" placeholder="Ketik pesan atau link..." autocomplete="off">
             <span class="material-symbols-rounded" style="color: #aaa;">mic_none</span>
         </div>
         <button class="btn-send" onclick="kirimPesan()">
@@ -280,15 +263,28 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
         return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
     }
 
+    // PESAN PEMBUKA DENGAN TOMBOL MENU
     function getDefaultChatHTML() {
         return `
             <div class="message-row ai">
                 <div class="bubble">
-                    <div class="text">Halo sayang... ada apa? Kalo butuh donlod TikTok kasih linknya ke aku aja ya!</div>
+                    <div class="text">Halo sayang! Vierra siap bantu kamu hari ini. ❤️</div>
+                    <button class="menu-btn" onclick="tampilkanMenu()">Lihat Daftar Fitur</button>
                     <div class="meta-data">${getTime()}</div>
                 </div>
             </div>
         `;
+    }
+
+    // FUNGSI UNTUK MENAMPILKAN MENU
+    function tampilkanMenu() {
+        const textMenu = "🌸 *DAFTAR FITUR VIERRA* 🌸\n\n💬 *Teman Ngobrol*\nTinggal ketik aja, Vierra siap nemenin kamu ngobrol!\n\n🎵 *TikTok Downloader*\nKirim link video TikTok, nanti Vierra kasih tombol download SD & HD.\n\n✨ _Fitur lainnya sedang dikembangkan..._";
+        
+        tampilkanPesan(textMenu, 'ai');
+        
+        // Simpan jejak agar AI tau kita habis ngasih menu
+        session.push({ role: 'assistant', content: "[Vierra menampilkan daftar menu fitur ke pengguna]" });
+        simpanSesi();
     }
 
     window.onload = () => {
@@ -311,21 +307,15 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
         localStorage.setItem('vierra_html', document.getElementById('chat-messages').innerHTML);
     }
 
-    // FUNGSI KONTROL CUSTOM MODAL
-    function bukaModal() {
-        document.getElementById('custom-modal').classList.add('active');
-    }
-
-    function tutupModal() {
-        document.getElementById('custom-modal').classList.remove('active');
-    }
+    function bukaModal() { document.getElementById('custom-modal').classList.add('active'); }
+    function tutupModal() { document.getElementById('custom-modal').classList.remove('active'); }
 
     function konfirmasiHapus() {
         localStorage.removeItem('vierra_session');
         localStorage.removeItem('vierra_html');
         session = [];
         document.getElementById('chat-messages').innerHTML = getDefaultChatHTML();
-        tutupModal(); // Tutup pop-up setelah menghapus
+        tutupModal(); 
     }
 
     async function kirimPesan() {
