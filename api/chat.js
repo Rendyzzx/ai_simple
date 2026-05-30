@@ -16,19 +16,18 @@ export default async function handler(req, res) {
             body: JSON.stringify(req.body)
         });
 
-        // 1. Ambil data sebagai teks mentah terlebih dahulu
+        // Ambil data sebagai teks mentah terlebih dahulu untuk menghindari crash saat parsing JSON
         const textData = await response.text();
         
         let finalData;
         try {
-            // 2. Coba ubah menjadi JSON (jika API membalas dengan JSON)
+            // Coba ubah menjadi JSON (jika API membalas dengan JSON yang valid)
             finalData = JSON.parse(textData);
         } catch (e) {
-            // 3. Jika gagal (artinya API membalas dengan teks biasa), bungkus ke dalam object
+            // Jika gagal (artinya API membalas dengan teks biasa), bungkus ke dalam object
             finalData = { text: textData };
         }
 
-        // Kirim hasil yang sudah aman ke index.html
         return res.status(200).json(finalData);
         
     } catch (error) {
