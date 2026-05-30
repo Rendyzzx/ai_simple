@@ -55,10 +55,8 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
         session.push({ role: 'user', content: text });
         input.value = '';
         
-        // Tampilkan indikator loading
         document.getElementById('loading-indicator').style.display = 'block';
 
-        // Batasi history agar request tidak terlalu berat
         if (session.length > 10) session.splice(0, 2);
 
         let payloadMessages = [
@@ -67,7 +65,6 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
         ];
 
         try {
-            // Nembak ke Serverless Function Vercel
             const response = await fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -83,10 +80,19 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
             document.getElementById('loading-indicator').style.display = 'none';
             
             let balasan = '';
-            if (typeof data === 'string') balasan = data;
-            else if (data && data.text) balasan = data.text;
-            else if (data && data.choices && data.choices.length > 0) balasan = data.choices[0].message.content;
-            else balasan = "M-maaf sayang... responnya kosong.";
+            
+            // Logika deteksi respons baru
+            if (data.error) {
+                balasan = `[Error Sistem]: ${data.error}`;
+            } else if (typeof data === 'string') {
+                balasan = data;
+            } else if (data && data.text) {
+                balasan = data.text;
+            } else if (data && data.choices && data.choices.length > 0) {
+                balasan = data.choices[0].message.content;
+            } else {
+                balasan = `M-maaf sayang... responnya aneh: ${JSON.stringify(data).substring(0, 50)}...`;
+            }
 
             tampilkanPesan(balasan, 'ai');
             session.push({ role: 'assistant', content: balasan });
@@ -94,7 +100,7 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
         } catch (e) {
             document.getElementById('loading-indicator').style.display = 'none';
             tampilkanPesan("S-sa-sayang... koneksiku ke server terputus.", 'ai');
-            session.pop(); // Hapus pesan user agar history tidak bug
+            session.pop(); 
         }
     }
 
@@ -107,7 +113,6 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
     
-    // Fitur Enter untuk mengirim pesan
     document.getElementById('input').addEventListener('keypress', function (e) {
         if (e.key === 'Enter') kirimPesan();
     });
