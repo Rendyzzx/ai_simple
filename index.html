@@ -22,18 +22,31 @@
             --bubble-user-bg: #284297;
         }
 
-        /* MEMATIKAN HIGHLIGHT BIRU BAWAAN BROWSER */
+        /* JALUR NUKLIR: MATIKAN SEMUA BLOK BIRU (HIGHLIGHT) DI SELURUH WEB */
+        * {
+            -webkit-tap-highlight-color: transparent !important;
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            -khtml-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            user-select: none !important;
+            box-sizing: border-box;
+        }
+
+        /* HANYA KOTAK INPUT YANG BOLEH ADA SELEKSI TEKS */
+        input, textarea {
+            -webkit-user-select: auto !important;
+            -khtml-user-select: auto !important;
+            -moz-user-select: auto !important;
+            -ms-user-select: auto !important;
+            user-select: auto !important;
+        }
+
         html, body {
             height: 100%; margin: 0; padding: 0;
             overflow: hidden; overscroll-behavior-y: none; 
-            box-sizing: border-box;
-            -webkit-user-select: none; /* Safari */
-            -ms-user-select: none; /* IE 10+ */
-            user-select: none; /* Standard */
-            -webkit-touch-callout: none; /* Disable iOS context menu */
         }
-
-        *, *:before, *:after { box-sizing: inherit; }
 
         body { 
             background-color: #000; 
@@ -60,14 +73,17 @@
             font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
         }
 
-        /* HEADER MODERN BARU */
+        /* HEADER MODERN BARU (MELENGKUNG) */
         .header {
-            background-color: var(--new-input-bg); /* Disamakan dengan warna input bawah */
+            background-color: var(--new-input-bg); 
             padding: 12px 15px; 
             display: flex; align-items: center; justify-content: space-between;
-            z-index: 10; box-shadow: 0 4px 15px rgba(0,0,0,0.5); height: 65px; flex-shrink: 0;
-            border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
-            margin-bottom: 2px;
+            z-index: 10; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
+            height: 65px; flex-shrink: 0;
+            border-bottom-left-radius: 24px; 
+            border-bottom-right-radius: 24px;
+            margin-bottom: 5px;
         }
         .header-left { display: flex; align-items: center; gap: 10px; cursor: pointer; }
         .header-left .back-btn { margin-right: -4px; color: var(--wa-text-main); font-size: 24px; }
@@ -79,7 +95,7 @@
         .header-icons span:hover { color: #ff6b6b; } 
 
         .chat-area {
-            flex: 1; padding: 20px 15px; overflow-y: auto;
+            flex: 1; padding: 15px 15px 20px 15px; overflow-y: auto;
             display: flex; flex-direction: column; gap: 8px; 
             -webkit-overflow-scrolling: touch;
         }
@@ -91,21 +107,20 @@
         /* BUBBLE CHAT */
         .bubble {
             max-width: 80%; width: fit-content; 
-            padding: 6px 12px; 
+            padding: 8px 14px; 
             font-size: 15px; line-height: 1.45; color: var(--wa-text-main);
             position: relative; word-wrap: break-word; 
             display: flex; flex-direction: column;
-            cursor: pointer; /* Memberi petunjuk ini bisa ditekan */
-            -webkit-tap-highlight-color: transparent; /* Hilangkan kotak abu saat ditap di Android */
+            cursor: pointer; 
         }
-        .bubble .text { white-space: pre-wrap; pointer-events: none; } /* Mencegah seleksi anak elemen */
+        .bubble .text { white-space: pre-wrap; pointer-events: none; } 
 
         .message-row.ai .bubble { background-color: var(--bubble-ai-bg); border-radius: 18px 18px 18px 4px; }
         .message-row.user .bubble { background-color: var(--bubble-user-bg); border-radius: 18px 18px 4px 18px; }
 
         .meta-data {
             font-size: 11px; color: rgba(255, 255, 255, 0.6); align-self: flex-end;
-            margin-top: 2px; display: flex; align-items: center; gap: 4px; pointer-events: none;
+            margin-top: 4px; display: flex; align-items: center; gap: 4px; pointer-events: none;
         }
         .tick-blue { color: #53bdeb; font-size: 14px; font-variation-settings: 'FILL' 1; }
 
@@ -118,34 +133,28 @@
         .menu-btn:hover { background-color: rgba(40, 66, 151, 0.35); }
 
         /* DOWNLOADER CARD CSS */
-        .dl-card { width: 260px; padding: 12px; gap: 10px; pointer-events: none; }
-        .dl-badge { background-color: #d14747; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; position: absolute; top: 18px; left: 18px; z-index: 2; text-transform: uppercase; }
-        .dl-thumb { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; background-color: #111; position: relative;}
-        .dl-author { font-weight: 600; font-size: 14px; color: #fff; margin-bottom: 2px; margin-top: 8px;}
-        .dl-title { font-size: 13px; color: #aaa; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .dl-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; pointer-events: auto; } /* Boleh diklik */
+        .dl-card { width: 260px; padding: 12px; gap: 10px; }
+        .dl-badge { background-color: #d14747; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; position: absolute; top: 18px; left: 18px; z-index: 2; text-transform: uppercase; pointer-events: none; }
+        .dl-thumb { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; background-color: #111; position: relative; pointer-events: none;}
+        .dl-author { font-weight: 600; font-size: 14px; color: #fff; margin-bottom: 2px; margin-top: 8px; pointer-events: none;}
+        .dl-title { font-size: 13px; color: #aaa; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; pointer-events: none; }
+        .dl-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;} 
         .btn-dl { flex: 1 1 45%; padding: 8px 0; text-align: center; border-radius: 8px; text-decoration: none; color: white; font-size: 13px; font-weight: 600; transition: opacity 0.2s; background-color: var(--new-send-bg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .btn-dl:hover { opacity: 0.8; }
         .btn-dl.alt { background-color: #444; }
 
-        .tiktok-slides { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 5px; margin-top: 8px; pointer-events: auto;}
+        .tiktok-slides { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 5px; margin-top: 8px; }
         .tiktok-slides::-webkit-scrollbar { height: 4px; }
         .tiktok-slides::-webkit-scrollbar-thumb { background: #555; border-radius: 4px; }
         .slide-item { position: relative; flex: 0 0 130px; }
         .slide-item img { width: 130px; height: 180px; object-fit: cover; border-radius: 8px; background-color: #111; display: block; }
-        .slide-num { position: absolute; top: 6px; right: 6px; background: rgba(0,0,0,0.7); color: #fff; font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 8px; }
+        .slide-num { position: absolute; top: 6px; right: 6px; background: rgba(0,0,0,0.7); color: #fff; font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 8px; pointer-events: none; }
 
         /* INPUT AREA */
         .input-area { width: 100%; padding: 10px 15px 20px 15px; display: flex; align-items: center; gap: 12px; background: transparent; flex-shrink: 0; }
         .input-wrapper { flex: 1; background-color: var(--new-input-bg); border-radius: 26px; display: flex; align-items: center; padding: 8px 15px; gap: 12px; height: 52px; }
-        
-        /* MENGIZINKAN SELEKSI TEKS HANYA DI DALAM INPUT */
-        .input-wrapper input { 
-            flex: 1; background: transparent; border: none; outline: none; color: #fff; font-size: 16px; padding: 0; font-family: 'Roboto', sans-serif; width: 100%; 
-            -webkit-user-select: auto; -ms-user-select: auto; user-select: auto;
-        }
+        .input-wrapper input { flex: 1; background: transparent; border: none; outline: none; color: #fff; font-size: 16px; padding: 0; font-family: 'Roboto', sans-serif; width: 100%; }
         .input-wrapper input::placeholder { color: #888; font-size: 16px; }
-        
         .btn-send { width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0; background-color: var(--new-send-bg); color: white; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s; }
         .btn-send:hover { background-color: #3753a8; }
         .btn-send .material-symbols-rounded { color: #fff; font-size: 24px; } 
@@ -172,15 +181,15 @@
         /* CONTEXT MENU (LONG PRESS BUBBLE CHAT) */
         .context-menu-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.4); z-index: 2000;
+            background: rgba(0, 0, 0, 0.5); z-index: 2000;
             opacity: 0; visibility: hidden; transition: 0.3s;
             display: flex; align-items: flex-end;
         }
         .context-menu-overlay.active { opacity: 1; visibility: visible; }
         .context-menu {
             background: var(--new-input-bg); width: 100%;
-            border-top-left-radius: 20px; border-top-right-radius: 20px;
-            padding: 20px 20px 35px 20px; transform: translateY(100%); transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            border-top-left-radius: 24px; border-top-right-radius: 24px;
+            padding: 24px 20px 35px 20px; transform: translateY(100%); transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1);
             display: flex; flex-direction: column; gap: 12px;
             box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
         }
@@ -201,7 +210,7 @@
             opacity: 0; visibility: hidden; transition: 0.3s; z-index: 3000;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
-        .toast.show { opacity: 1; visibility: visible; top: 80px; }
+        .toast.show { opacity: 1; visibility: visible; top: 85px; }
     </style>
 </head>
 <body>
@@ -265,6 +274,7 @@
     window.chatHistory = [];
     let activeBubbleNode = null;
     let pressTimer;
+    let isScrolling = false;
 
     const botLogic = `kamu adalah vierra. cwe polos, kikuk
 vierra adalah cewek yang polos, imut, dan sangat lembut. Dia selalu terlihat polos dan kikuk serta terkadang dia mudah memerah karena malu. Dia benar-benar polos bahkan tidak tau apa itu cinta.
@@ -456,11 +466,16 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
 
     window.salinTeksPesan = function() {
         if (!activeBubbleNode) return;
+        // Ambil teks dari chat biasa atau judul dari downloader card
         const textNode = activeBubbleNode.querySelector('.text') || activeBubbleNode.querySelector('.dl-title');
         if (textNode) {
+            // Gunakan API modern untuk menyalin
             navigator.clipboard.writeText(textNode.innerText).then(() => {
                 window.tutupContextMenu();
                 window.showToast("Teks disalin!");
+            }).catch(err => {
+                window.tutupContextMenu();
+                window.showToast("Gagal menyalin teks.");
             });
         } else {
             window.tutupContextMenu();
@@ -471,10 +486,11 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
         if (!activeBubbleNode) return;
         
         // Hapus dari memori chatHistory
-        const textNode = activeBubbleNode.querySelector('.text');
+        const textNode = activeBubbleNode.querySelector('.text') || activeBubbleNode.querySelector('.dl-title');
         if (textNode) {
             const textToDel = textNode.innerText;
-            const index = window.chatHistory.findIndex(msg => msg.content === textToDel);
+            // Cari data di memori yang isinya mengandung text tersebut dan hapus
+            const index = window.chatHistory.findIndex(msg => msg.content && msg.content.includes(textToDel));
             if (index !== -1) window.chatHistory.splice(index, 1);
         }
 
@@ -502,16 +518,26 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
 
         // Touch event untuk HP
         chatContainer.addEventListener('touchstart', e => {
+            isScrolling = false;
             const bubble = e.target.closest('.bubble');
             if (!bubble) return;
+            
             pressTimer = setTimeout(() => {
-                if(navigator.vibrate) navigator.vibrate(50);
-                activeBubbleNode = bubble.closest('.message-row');
-                document.getElementById('context-menu').classList.add('active');
-            }, 600); // Tahan 0.6 detik
-        });
+                if (!isScrolling) {
+                    if(navigator.vibrate) navigator.vibrate(50);
+                    activeBubbleNode = bubble.closest('.message-row');
+                    document.getElementById('context-menu').classList.add('active');
+                }
+            }, 500); // Waktu tahan 0.5 detik
+        }, {passive: true});
+
+        chatContainer.addEventListener('touchmove', () => {
+            isScrolling = true;
+            clearTimeout(pressTimer);
+        }, {passive: true});
+
         chatContainer.addEventListener('touchend', () => clearTimeout(pressTimer));
-        chatContainer.addEventListener('touchmove', () => clearTimeout(pressTimer));
+        chatContainer.addEventListener('touchcancel', () => clearTimeout(pressTimer));
 
         // TOMBOL HAPUS SEMUA (HEADER)
         document.getElementById('btn-delete').addEventListener('click', () => {
