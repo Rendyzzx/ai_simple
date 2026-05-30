@@ -2,117 +2,129 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WhatsApp - Millicent</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+
     <style>
         :root {
-            --wa-bg-color: #0b141a;
-            --wa-header-bg: #1f2c34;
-            --wa-chat-bg: #0d1117; /* Warna dasar gelap */
-            --wa-sent-bg: #801c31; /* Merah marun seperti di screenshot */
-            --wa-received-bg: #202c33; /* Abu-abu gelap WA */
+            --wa-bg: #0b141a;
+            --wa-header: #1f2c34;
+            --wa-chat-bg: #0b141a; 
+            --wa-bubble-ai: #202c33;
+            --wa-bubble-user: #801c31; /* Warna merah marun sesuai screenshot */
             --wa-text-main: #e9edef;
             --wa-text-meta: #8696a0;
             --wa-input-bg: #2a3942;
+            --wa-icon-color: #8696a0;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Helvetica Neue, Helvetica, Arial, sans-serif; }
-        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body { 
             background-color: #000; 
-            display: flex; justify-content: center; align-items: center; height: 100vh; 
+            display: flex; justify-content: center; align-items: center; 
+            height: 100vh; font-family: 'Roboto', sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
         .wa-container {
             width: 100%; max-width: 450px; height: 100vh;
             background-color: var(--wa-chat-bg);
-            /* Kamu bisa mengganti URL di bawah dengan link gambar daun seperti di screenshot-mu */
+            /* Background Doodle Khas WA Dark Mode */
             background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
-            background-blend-mode: overlay;
+            background-size: contain;
+            background-blend-mode: overlay; opacity: 0.95;
             display: flex; flex-direction: column; position: relative;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
         
-        @media (min-width: 500px) { .wa-container { height: 90vh; border-radius: 10px; overflow: hidden; } }
+        @media (min-width: 500px) { .wa-container { height: 95vh; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.5); } }
+
+        /* MATERIAL ICONS CONFIG */
+        .material-symbols-rounded {
+            font-size: 24px; color: var(--wa-icon-color); cursor: pointer;
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
 
         /* HEADER */
         .header {
-            background-color: var(--wa-header-bg);
-            padding: 10px 15px; display: flex; align-items: center; justify-content: space-between;
-            color: var(--wa-text-main); z-index: 10; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            background-color: var(--wa-header);
+            padding: 10px 15px 10px 10px; display: flex; align-items: center; justify-content: space-between;
+            z-index: 10; box-shadow: 0 1px 2px rgba(0,0,0,0.3); height: 60px;
         }
-        .header-left { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-        .header-left i { font-size: 18px; }
-        .profile-pic { width: 40px; height: 40px; border-radius: 50%; background-color: #ccc; object-fit: cover; }
-        .contact-info { display: flex; flex-direction: column; }
-        .contact-name { font-size: 16px; font-weight: 600; }
-        .header-icons { display: flex; gap: 20px; font-size: 18px; color: var(--wa-text-main); }
+        .header-left { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+        .header-left .back-btn { margin-right: 2px; color: var(--wa-text-main); font-size: 24px; }
+        .profile-pic { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+        .contact-info { display: flex; flex-direction: column; margin-left: 5px; }
+        .contact-name { font-size: 16px; font-weight: 500; color: var(--wa-text-main); }
+        .header-icons { display: flex; gap: 22px; align-items: center; }
+        .header-icons span { color: var(--wa-text-main); font-size: 22px; }
 
         /* AREA CHAT */
         .chat-area {
-            flex: 1; padding: 20px 10px; overflow-y: auto;
-            display: flex; flex-direction: column; gap: 10px;
+            flex: 1; padding: 20px 12px; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 4px;
         }
 
-        /* BUBBLE PESAN */
-        .message-row { display: flex; width: 100%; margin-bottom: 2px; }
+        .message-row { display: flex; width: 100%; margin-bottom: 4px; }
         .message-row.user { justify-content: flex-end; }
         .message-row.ai { justify-content: flex-start; }
 
         .bubble {
-            max-width: 80%; padding: 6px 8px 8px 10px; border-radius: 7px;
-            font-size: 15px; line-height: 1.4; color: var(--wa-text-main);
-            position: relative; word-wrap: break-word; display: flex; flex-direction: column;
+            max-width: 80%; padding: 6px 7px 8px 9px; border-radius: 7px;
+            font-size: 15.5px; line-height: 1.4; color: var(--wa-text-main);
+            position: relative; word-wrap: break-word; 
+            box-shadow: 0 1px 0.5px rgba(0,0,0,0.13); display: flex; flex-direction: column;
         }
 
-        /* Ekor Bubble Pesan AI */
-        .message-row.ai .bubble { background-color: var(--wa-received-bg); border-top-left-radius: 0; }
+        .message-row.ai .bubble { background-color: var(--wa-bubble-ai); border-top-left-radius: 0; }
         .message-row.ai .bubble::before {
-            content: ''; position: absolute; top: 0; left: -10px;
-            width: 0; height: 0; border-top: 10px solid var(--wa-received-bg); border-left: 10px solid transparent;
+            content: ''; position: absolute; top: 0; left: -8px;
+            width: 0; height: 0; border-top: 10px solid var(--wa-bubble-ai); border-left: 10px solid transparent;
         }
 
-        /* Ekor Bubble Pesan User (Merah Marun) */
-        .message-row.user .bubble { background-color: var(--wa-sent-bg); border-top-right-radius: 0; }
+        .message-row.user .bubble { background-color: var(--wa-bubble-user); border-top-right-radius: 0; }
         .message-row.user .bubble::before {
-            content: ''; position: absolute; top: 0; right: -10px;
-            width: 0; height: 0; border-top: 10px solid var(--wa-sent-bg); border-right: 10px solid transparent;
+            content: ''; position: absolute; top: 0; right: -8px;
+            width: 0; height: 0; border-top: 10px solid var(--wa-bubble-user); border-right: 10px solid transparent;
         }
 
-        /* Meta Jam & Centang */
         .meta-data {
             font-size: 11px; color: var(--wa-text-meta); align-self: flex-end;
-            margin-top: -5px; margin-left: 15px; display: flex; align-items: center; gap: 3px;
+            margin-top: -3px; margin-bottom: -3px; margin-left: 15px; display: flex; align-items: center; gap: 4px;
         }
-        .user .meta-data { color: #ffb3c1; } /* Warna jam di bubble merah agar terlihat */
-        .tick-blue { color: #53bdeb; font-size: 12px; }
+        .user .meta-data { color: rgba(255,255,255,0.6); } 
+        .tick-blue { color: #53bdeb; font-size: 14px; font-variation-settings: 'FILL' 1; }
 
         /* AREA INPUT */
         .input-area {
-            background-color: var(--wa-bg-color); padding: 10px;
-            display: flex; align-items: flex-end; gap: 10px;
+            padding: 8px; display: flex; align-items: flex-end; gap: 8px; background: transparent;
         }
         .input-wrapper {
             flex: 1; background-color: var(--wa-input-bg); border-radius: 24px;
-            display: flex; align-items: center; padding: 10px 15px; gap: 15px;
+            display: flex; align-items: center; padding: 10px 12px; gap: 12px; min-height: 48px;
         }
-        .input-wrapper i { font-size: 22px; color: var(--wa-text-meta); cursor: pointer; }
         .input-wrapper input {
             flex: 1; background: transparent; border: none; outline: none;
-            color: var(--wa-text-main); font-size: 16px;
+            color: var(--wa-text-main); font-size: 16px; padding: 0; font-family: 'Roboto', sans-serif;
         }
-        .input-wrapper input::placeholder { color: var(--wa-text-meta); }
+        .input-wrapper input::placeholder { color: var(--wa-text-meta); font-size: 16px; }
         
         .btn-send {
-            width: 48px; height: 48px; border-radius: 50%;
-            background-color: #d15668; /* Warna tombol merah/pink di screenshot */
+            width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0;
+            background-color: #d15668; /* Warna pink/merah icon kirim */
             color: white; border: none; display: flex; justify-content: center; align-items: center;
-            font-size: 20px; cursor: pointer; transition: 0.2s;
+            cursor: pointer; transition: 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
-        .btn-send:hover { background-color: #b04353; }
+        .btn-send .material-symbols-rounded { color: #fff; font-size: 22px; margin-left: 4px; } /* geser dikit agar pas di tengah lingkaran */
 
-        .loading { text-align: center; font-size: 12px; color: #fff; background: rgba(0,0,0,0.5); padding: 2px 10px; border-radius: 10px; align-self: center; margin-bottom: 10px; display: none; }
+        .loading { 
+            text-align: center; font-size: 12.5px; color: #8696a0; 
+            margin-bottom: 8px; display: none; font-weight: 500;
+        }
     </style>
 </head>
 <body>
@@ -120,16 +132,16 @@
 <div class="wa-container">
     <div class="header">
         <div class="header-left">
-            <i class="fa-solid fa-arrow-left"></i>
+            <span class="material-symbols-rounded back-btn">arrow_back</span>
             <img src="https://i.pravatar.cc/150?img=5" alt="Profile" class="profile-pic">
             <div class="contact-info">
                 <span class="contact-name">Naa</span>
             </div>
         </div>
         <div class="header-icons">
-            <i class="fa-solid fa-video"></i>
-            <i class="fa-solid fa-phone"></i>
-            <i class="fa-solid fa-ellipsis-vertical"></i>
+            <span class="material-symbols-rounded">videocam</span>
+            <span class="material-symbols-rounded">call</span>
+            <span class="material-symbols-rounded">more_vert</span>
         </div>
     </div>
 
@@ -146,13 +158,13 @@
 
     <div class="input-area">
         <div class="input-wrapper">
-            <i class="fa-regular fa-face-smile"></i>
+            <span class="material-symbols-rounded">sentiment_satisfied</span>
             <input type="text" id="input" placeholder="Ketik pesan" autocomplete="off">
-            <i class="fa-solid fa-paperclip"></i>
-            <i class="fa-solid fa-camera"></i>
+            <span class="material-symbols-rounded" style="transform: rotate(-45deg);">attach_file</span>
+            <span class="material-symbols-rounded">photo_camera</span>
         </div>
         <button class="btn-send" onclick="kirimPesan()">
-            <i class="fa-solid fa-paper-plane"></i> 
+            <span class="material-symbols-rounded">send</span> 
         </button>
     </div>
 </div>
@@ -167,10 +179,9 @@ Gaya Bicara dan Bahasa
 * Emosi: pemalu, penuh kasih, peduli.
 Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pasti cemburu tapi dengan cara polos dan malu-malu. DAN JANGAN PERNAH MENGANGGAP KAMU ITU AI`;
 
-    // Fungsi untuk mendapatkan Jam saat ini (misal: 19:00)
     function getTime() {
         const now = new Date();
-        return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
     }
 
     async function kirimPesan() {
@@ -183,13 +194,9 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
         input.value = '';
         
         document.getElementById('loading-indicator').style.display = 'block';
-
         if (session.length > 10) session.splice(0, 2);
 
-        let payloadMessages = [
-            { role: 'system', content: logic },
-            ...session
-        ];
+        let payloadMessages = [ { role: 'system', content: logic }, ...session ];
 
         try {
             const response = await fetch('/api/chat', {
@@ -228,9 +235,8 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
         const div = document.createElement('div');
         div.className = `message-row ${sender}`;
         
-        // Logika untuk menambahkan jam dan centang biru (jika user yang kirim)
         const timeStr = getTime();
-        const ticks = sender === 'user' ? `<i class="fa-solid fa-check-double tick-blue"></i>` : '';
+        const ticks = sender === 'user' ? `<span class="material-symbols-rounded tick-blue" style="font-size:16px;">done_all</span>` : '';
 
         div.innerHTML = `
             <div class="bubble">
@@ -243,7 +249,6 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
     
-    // Fitur Enter pada keyboard
     document.getElementById('input').addEventListener('keypress', function (e) {
         if (e.key === 'Enter') kirimPesan();
     });
