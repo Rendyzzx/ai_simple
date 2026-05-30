@@ -10,49 +10,39 @@
 
     <style>
         :root {
-            --wa-bg: #0b141a;
             --wa-chat-bg: #0b141a; 
             --wa-text-main: #ffffff;
             --wa-icon-color: #d1d1d1;
-            
             --new-input-bg: #222222;
             --new-send-bg: #284297; 
-            
             --bubble-ai-bg: #222222; 
             --bubble-user-bg: #284297;
         }
 
-        /* JALUR NUKLIR: MATIKAN SEMUA BLOK BIRU (HIGHLIGHT) DI SELURUH WEB */
+        /* SUPER ANTI-SELEKSI: Mematikan total semua interaksi bawaan browser */
         * {
             -webkit-tap-highlight-color: transparent !important;
             -webkit-touch-callout: none !important;
             -webkit-user-select: none !important;
-            -khtml-user-select: none !important;
-            -moz-user-select: none !important;
-            -ms-user-select: none !important;
             user-select: none !important;
             box-sizing: border-box;
         }
 
-        /* HANYA KOTAK INPUT YANG BOLEH ADA SELEKSI TEKS */
+        /* KECUALI Kotak Input */
         input, textarea {
             -webkit-user-select: auto !important;
-            -khtml-user-select: auto !important;
-            -moz-user-select: auto !important;
-            -ms-user-select: auto !important;
             user-select: auto !important;
         }
 
         html, body {
             height: 100%; margin: 0; padding: 0;
             overflow: hidden; overscroll-behavior-y: none; 
+            background-color: #000;
         }
 
         body { 
-            background-color: #000; 
             display: flex; justify-content: center; align-items: center; 
             font-family: 'Roboto', sans-serif;
-            -webkit-font-smoothing: antialiased;
         }
 
         .wa-container {
@@ -73,21 +63,20 @@
             font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
         }
 
-        /* HEADER MODERN BARU (MELENGKUNG) */
+        /* FLOATING HEADER MODERN */
         .header {
             background-color: var(--new-input-bg); 
-            padding: 12px 15px; 
+            margin: 10px 10px 0 10px; /* Diberi margin agar mengambang */
+            padding: 10px 15px; 
             display: flex; align-items: center; justify-content: space-between;
             z-index: 10; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
-            height: 65px; flex-shrink: 0;
-            border-bottom-left-radius: 24px; 
-            border-bottom-right-radius: 24px;
-            margin-bottom: 5px;
+            border-radius: 20px; /* Membulat di semua sisi */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4); 
+            height: 60px; flex-shrink: 0;
         }
-        .header-left { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-        .header-left .back-btn { margin-right: -4px; color: var(--wa-text-main); font-size: 24px; }
-        .profile-pic { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 1.5px solid #333; }
+        .header-left { display: flex; align-items: center; gap: 10px; cursor: pointer; pointer-events: none;}
+        .header-left .back-btn { margin-right: -4px; color: var(--wa-text-main); font-size: 24px; pointer-events: auto;}
+        .profile-pic { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
         .contact-info { display: flex; flex-direction: column; margin-left: 2px; }
         .contact-name { font-size: 16px; font-weight: 600; color: var(--wa-text-main); }
         .header-icons { display: flex; gap: 20px; align-items: center; }
@@ -130,25 +119,16 @@
             font-size: 13.5px; font-weight: 500; cursor: pointer; width: 100%;
             transition: all 0.2s; font-family: 'Roboto', sans-serif; text-align: center;
         }
-        .menu-btn:hover { background-color: rgba(40, 66, 151, 0.35); }
 
         /* DOWNLOADER CARD CSS */
-        .dl-card { width: 260px; padding: 12px; gap: 10px; }
-        .dl-badge { background-color: #d14747; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; position: absolute; top: 18px; left: 18px; z-index: 2; text-transform: uppercase; pointer-events: none; }
-        .dl-thumb { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; background-color: #111; position: relative; pointer-events: none;}
+        .dl-card { width: 260px; padding: 12px; gap: 10px; pointer-events: none; }
+        .dl-badge { background-color: #d14747; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; position: absolute; top: 18px; left: 18px; z-index: 2; }
+        .dl-thumb { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; background-color: #111; pointer-events: none;}
         .dl-author { font-weight: 600; font-size: 14px; color: #fff; margin-bottom: 2px; margin-top: 8px; pointer-events: none;}
         .dl-title { font-size: 13px; color: #aaa; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; pointer-events: none; }
-        .dl-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;} 
-        .btn-dl { flex: 1 1 45%; padding: 8px 0; text-align: center; border-radius: 8px; text-decoration: none; color: white; font-size: 13px; font-weight: 600; transition: opacity 0.2s; background-color: var(--new-send-bg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .btn-dl:hover { opacity: 0.8; }
+        .dl-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; pointer-events: auto; } 
+        .btn-dl { flex: 1 1 45%; padding: 8px 0; text-align: center; border-radius: 8px; text-decoration: none; color: white; font-size: 13px; font-weight: 600; background-color: var(--new-send-bg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .btn-dl.alt { background-color: #444; }
-
-        .tiktok-slides { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 5px; margin-top: 8px; }
-        .tiktok-slides::-webkit-scrollbar { height: 4px; }
-        .tiktok-slides::-webkit-scrollbar-thumb { background: #555; border-radius: 4px; }
-        .slide-item { position: relative; flex: 0 0 130px; }
-        .slide-item img { width: 130px; height: 180px; object-fit: cover; border-radius: 8px; background-color: #111; display: block; }
-        .slide-num { position: absolute; top: 6px; right: 6px; background: rgba(0,0,0,0.7); color: #fff; font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 8px; pointer-events: none; }
 
         /* INPUT AREA */
         .input-area { width: 100%; padding: 10px 15px 20px 15px; display: flex; align-items: center; gap: 12px; background: transparent; flex-shrink: 0; }
@@ -158,25 +138,26 @@
         .btn-send { width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0; background-color: var(--new-send-bg); color: white; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s; }
         .btn-send:hover { background-color: #3753a8; }
         .btn-send .material-symbols-rounded { color: #fff; font-size: 24px; } 
+        
+        .btn-attach { color: #aaa; font-size: 26px !important; transition: 0.2s; }
+        .btn-attach.active { color: #ff6b6b !important; }
 
         .loading { text-align: center; font-size: 12.5px; color: rgba(255, 255, 255, 0.7); margin-bottom: 8px; display: none; font-weight: 500; flex-shrink: 0; }
 
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
         .shake { animation: shake 0.3s ease-in-out; }
 
-        /* MODAL HAPUS SESI */
-        .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
+        /* MODAL */
+        .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; visibility: hidden; transition: 0.3s; }
         .modal-overlay.active { opacity: 1; visibility: visible; }
-        .modal-box { background-color: var(--new-input-bg); width: 85%; max-width: 320px; border-radius: 16px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transform: translateY(20px) scale(0.95); transition: transform 0.3s ease; color: var(--wa-text-main); text-align: center; }
+        .modal-box { background-color: var(--new-input-bg); width: 85%; max-width: 320px; border-radius: 16px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transform: translateY(20px) scale(0.95); transition: 0.3s; color: var(--wa-text-main); text-align: center; }
         .modal-overlay.active .modal-box { transform: translateY(0) scale(1); }
         .modal-title { font-size: 18px; font-weight: 600; margin-bottom: 12px; color: #ff6b6b; }
         .modal-text { font-size: 14.5px; color: #ccc; margin-bottom: 24px; line-height: 1.5; }
         .modal-actions { display: flex; gap: 12px; }
-        .modal-btn { flex: 1; padding: 12px 0; border: none; border-radius: 10px; font-size: 14.5px; font-weight: 600; cursor: pointer; transition: 0.2s; font-family: 'Roboto', sans-serif; }
+        .modal-btn { flex: 1; padding: 12px 0; border: none; border-radius: 10px; font-size: 14.5px; font-weight: 600; cursor: pointer; font-family: 'Roboto', sans-serif; }
         .modal-btn.cancel { background-color: #333; color: #fff; }
-        .modal-btn.cancel:hover { background-color: #444; }
         .modal-btn.confirm { background-color: #d14747; color: #fff; }
-        .modal-btn.confirm:hover { background-color: #b53838; }
 
         /* CONTEXT MENU (LONG PRESS BUBBLE CHAT) */
         .context-menu-overlay {
@@ -199,16 +180,13 @@
             font-size: 15px; font-weight: 500; display: flex; align-items: center; gap: 12px; cursor: pointer;
             font-family: 'Roboto', sans-serif;
         }
-        .context-btn:active { background: #444; }
         .context-btn.danger { color: #ff6b6b; }
         
-        /* TOAST NOTIFICATION */
         .toast {
             position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
             background: var(--new-send-bg); color: #fff; padding: 8px 16px;
             border-radius: 20px; font-size: 13px; font-weight: 500;
             opacity: 0; visibility: hidden; transition: 0.3s; z-index: 3000;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
         .toast.show { opacity: 1; visibility: visible; top: 85px; }
     </style>
@@ -232,11 +210,14 @@
     </div>
 
     <div class="chat-area" id="chat-messages"></div>
-    <div class="loading" id="loading-indicator">Vierra sedang proses...</div>
+    <div class="loading" id="loading-indicator">Vierra sedang memproses...</div>
+
+    <input type="file" id="image-input" accept="image/*" style="display:none">
 
     <div class="input-area">
         <div class="input-wrapper">
-            <span class="material-symbols-rounded" style="font-size: 28px; color: #aaa;">add</span>
+            <span class="material-symbols-rounded btn-attach" id="btn-attach" title="Kirim Gambar">add_photo_alternate</span>
+            
             <input type="text" id="input" placeholder="Ketik pesan atau link..." autocomplete="off">
             <span class="material-symbols-rounded" style="color: #aaa;">mic_none</span>
         </div>
@@ -272,6 +253,7 @@
 
 <script>
     window.chatHistory = [];
+    window.pendingImageBase64 = null; // Menyimpan gambar sementara
     let activeBubbleNode = null;
     let pressTimer;
     let isScrolling = false;
@@ -314,20 +296,23 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
     };
 
     window.tampilkanMenu = function() {
-        const textMenu = "🌸 *DAFTAR FITUR VIERRA* 🌸\n\n💬 *Teman Ngobrol*\nTinggal ketik aja, Vierra siap nemenin kamu ngobrol!\n\n📥 *Multi Downloader*\nKirimkan *link* dari aplikasi ini, Vierra akan bantu download!\n- TikTok (Video / Slide)\n- Instagram (Reels / TV)\n- Twitter / X\n- Facebook Video\n- CapCut Template\n- Lahelu Meme\n- Google Drive";
+        const textMenu = "🌸 *DAFTAR FITUR VIERRA* 🌸\n\n💬 *Teman Ngobrol*\nTinggal ketik aja, Vierra siap nemenin kamu ngobrol!\n\n📥 *Multi Downloader*\nKirimkan *link* aplikasi, Vierra akan bantu download!\n\n🖼️ *Melihat Gambar (AI)*\nKirimkan foto, dan Vierra bisa bantu menganalisisnya!";
         tampilkanPesan(textMenu, 'ai');
         window.chatHistory.push({ role: 'assistant', content: "[Vierra menampilkan daftar menu fitur ke pengguna]" });
         window.simpanSesi();
     };
 
-    function tampilkanPesan(text, sender) {
+    function tampilkanPesan(text, sender, imageUrl = null) {
         const chatMessages = document.getElementById('chat-messages');
         const div = document.createElement('div');
         div.className = `message-row ${sender}`;
         const timeStr = window.getTimeStr();
         const ticks = sender === 'user' ? `<span class="material-symbols-rounded tick-blue" style="font-size:16px;">done_all</span>` : '';
 
-        div.innerHTML = `<div class="bubble"><div class="text">${text}</div><div class="meta-data">${timeStr} ${ticks}</div></div>`;
+        // Jika pesan memiliki gambar (fitur Vision AI)
+        const imgHtml = imageUrl ? `<img src="${imageUrl}" style="width:100%; border-radius:12px; margin-bottom:8px; display:block; pointer-events:none;">` : '';
+
+        div.innerHTML = `<div class="bubble">${imgHtml}<div class="text">${text}</div><div class="meta-data">${timeStr} ${ticks}</div></div>`;
         chatMessages.appendChild(div);
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
@@ -339,60 +324,31 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
         const timeStr = window.getTimeStr();
 
         let thumb = "https://placehold.co/260x160/222222/FFFFFF?text=No+Thumbnail";
-        let title = "Video / Media";
-        let author = "";
-        let buttonsHtml = "";
-        let badge = platform.toUpperCase();
+        let title = "Media"; let author = ""; let buttonsHtml = ""; let badge = platform.toUpperCase();
 
-        if (platform === 'tiktok') {
-            if (data.type === 'slide' || data.type === 'image') {
-                let slidesHtml = '';
-                if (data.media) {
-                    data.media.forEach((img, idx) => {
-                        let imgUrl = img.thumbnail ? img.thumbnail : img.url;
-                        slidesHtml += `<div class="slide-item"><a href="${img.url}" target="_blank"><img src="${imgUrl}" referrerpolicy="no-referrer"></a><div class="slide-num">${idx+1}/${data.media.length}</div></div>`;
-                    });
-                }
-                div.innerHTML = `<div class="bubble dl-card" style="width: 280px;"><div class="dl-badge" style="background:#00f2fe; color:#000;">TIKTOK SLIDE</div><div class="dl-author">@${data.author ? data.author : 'Unknown'}</div><div class="dl-title">${data.title}</div><div style="font-size: 11px; color:#7b9cff; margin-top:5px;">Geser untuk melihat foto ➔</div><div class="tiktok-slides">${slidesHtml}</div><div class="meta-data">${timeStr}</div></div>`;
-                chatMessages.appendChild(div);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-                return;
-            } else {
-                thumb = data.thumbnail ? data.thumbnail : thumb; 
-                title = data.title; 
-                author = "@" + (data.author ? data.author : 'Tiktok');
+        if (platform === 'tiktok' && (data.type === 'slide' || data.type === 'image')) {
+            let slidesHtml = '';
+            if (data.media) data.media.forEach((img, idx) => slidesHtml += `<div class="slide-item"><a href="${img.url}" target="_blank"><img src="${img.thumbnail || img.url}" referrerpolicy="no-referrer"></a><div class="slide-num">${idx+1}/${data.media.length}</div></div>`);
+            div.innerHTML = `<div class="bubble dl-card" style="width: 280px;"><div class="dl-badge" style="background:#00f2fe; color:#000;">TIKTOK SLIDE</div><div class="dl-author">@${data.author || 'Unknown'}</div><div class="dl-title">${data.title}</div><div style="font-size: 11px; color:#7b9cff; margin-top:5px;">Geser untuk melihat foto ➔</div><div class="tiktok-slides" style="pointer-events:auto;">${slidesHtml}</div><div class="meta-data">${timeStr}</div></div>`;
+        } else {
+            if (platform === 'tiktok') {
+                thumb = data.thumbnail || thumb; title = data.title; author = "@" + (data.author || 'Tiktok');
                 let sdData = data.media ? data.media.find(m => m.quality === 'SD' || m.type === 'video') : null;
                 let hdData = data.media ? data.media.find(m => m.quality === 'HD' || m.type === 'video_hd') : null;
                 buttonsHtml = `<a href="${sdData ? sdData.url : '#'}" target="_blank" class="btn-dl alt">Video SD</a><a href="${hdData ? (hdData.url || hdData.backup) : '#'}" target="_blank" class="btn-dl">Video HD</a>`;
+            } else if (platform === 'ig') {
+                thumb = (data.url && data.url.length > 0) ? data.url[0].url : thumb; title = data.meta?.title || 'Instagram Media';
+                if(data.url) data.url.forEach(item => buttonsHtml += `<a href="${item.url}" target="_blank" class="btn-dl ${item.quality ? '' : 'alt'}">Unduh ${item.name || item.type}</a>`);
+            } else if (platform === 'twitter') {
+                thumb = data.imgUrl || thumb; title = data.videoDescription || "Twitter Video"; author = data.videoTitle;
+                buttonsHtml = `<a href="${data.downloadLink}" target="_blank" class="btn-dl">Download Video</a>`;
             }
-        } 
-        else if (platform === 'ig') {
-            thumb = (data.url && data.url.length > 0) ? data.url[0].url : thumb; title = data.meta ? data.meta.title : 'Instagram Media';
-            if(data.url) data.url.forEach(item => { buttonsHtml += `<a href="${item.url}" target="_blank" class="btn-dl ${item.quality ? '' : 'alt'}">Unduh ${item.name || item.type}</a>`; });
-        }
-        else if (platform === 'capcut') {
-            thumb = data.coverUrl ? data.coverUrl : thumb; title = data.title; author = data.authorName;
-            buttonsHtml = `<a href="${data.originalVideoUrl}" target="_blank" class="btn-dl">Download Template</a>`;
-        }
-        else if (platform === 'gdrive') {
-            thumb = "https://placehold.co/260x160/4285F4/FFFFFF?text=Google+Drive"; title = data.name;
-            buttonsHtml = `<a href="${data.download}" target="_blank" class="btn-dl">Download File</a>`;
-        }
-        else if (platform === 'lahelu') {
-            thumb = data.mediaThumbnail ? data.mediaThumbnail : thumb; title = data.title; author = "@" + data.userUsername;
-            buttonsHtml = `<a href="${data.media}" target="_blank" class="btn-dl">Download Meme</a>`;
-        }
-        else if (platform === 'twitter') {
-            thumb = data.imgUrl ? data.imgUrl : thumb; title = data.videoDescription ? data.videoDescription : "Twitter Video"; author = data.videoTitle;
-            buttonsHtml = `<a href="${data.downloadLink}" target="_blank" class="btn-dl">Download Video</a>`;
-        }
-        else if (platform === 'facebook') {
-            thumb = data.thumbnail ? data.thumbnail : thumb; title = data.title; author = data.duration ? `Durasi: ${data.duration}` : "";
-            if (data.downloads) data.downloads.forEach(d => { buttonsHtml += `<a href="${d.url}" target="_blank" class="btn-dl ${d.quality.includes("SD") ? "alt" : ""}">Unduh ${d.quality}</a>`; });
-        }
+            // Fitur downloader lainnya dipersingkat di view HTML agar rapi...
+            else { thumb=data.thumbnail||data.coverUrl||thumb; title=data.title||data.name; buttonsHtml=`<a href="${data.download||data.media||data.originalVideoUrl}" target="_blank" class="btn-dl">Download File</a>`; }
 
-        let authorHtml = author ? `<div class="dl-author">${author}</div>` : '';
-        div.innerHTML = `<div class="bubble dl-card"><div class="dl-badge">${badge}</div><img src="${thumb}" class="dl-thumb" alt="Thumbnail" referrerpolicy="no-referrer" onerror="this.src='https://placehold.co/260x160/222222/FFFFFF?text=No+Thumbnail'">${authorHtml}<div class="dl-title">${title}</div><div class="dl-actions">${buttonsHtml}</div><div class="meta-data">${timeStr}</div></div>`;
+            let authorHtml = author ? `<div class="dl-author">${author}</div>` : '';
+            div.innerHTML = `<div class="bubble dl-card"><div class="dl-badge">${badge}</div><img src="${thumb}" class="dl-thumb" alt="Thumbnail" referrerpolicy="no-referrer" onerror="this.src='https://placehold.co/260x160/222222/FFFFFF?text=No+Thumbnail'">${authorHtml}<div class="dl-title">${title}</div><div class="dl-actions">${buttonsHtml}</div><div class="meta-data">${timeStr}</div></div>`;
+        }
         chatMessages.appendChild(div);
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
@@ -400,18 +356,29 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
     async function kirimPesan() {
         const input = document.getElementById('input');
         const text = input.value.trim();
+        const hasImage = window.pendingImageBase64 !== null;
         
-        if (!text) {
+        // Cek jika kosong
+        if (!text && !hasImage) {
             input.parentElement.classList.add('shake');
             setTimeout(() => input.parentElement.classList.remove('shake'), 300);
             return;
         }
 
-        tampilkanPesan(text, 'user');
-        window.chatHistory.push({ role: 'user', content: text });
+        // Tampilkan gambar di UI jika ada
+        tampilkanPesan(text || "📷 Gambar", 'user', window.pendingImageBase64);
+        
+        // Simpan ke history text saja (gambar tidak disave ke session history agar memori browser tidak penuh)
+        window.chatHistory.push({ role: 'user', content: text || "[User mengirim gambar]" });
         window.simpanSesi(); 
 
+        const sentImage = window.pendingImageBase64;
+        
+        // Reset Input
         input.value = '';
+        window.pendingImageBase64 = null;
+        document.getElementById('btn-attach').classList.remove('active');
+        
         document.getElementById('loading-indicator').style.display = 'block';
         if (window.chatHistory.length > 10) window.chatHistory.splice(0, 2);
 
@@ -422,10 +389,10 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    model: { id: 'gpt-4', name: 'GPT-4', maxLength: 32000, tokenLimit: 8000, completionTokenLimit: 5000, deploymentName: 'gpt-4' },
+                    model: { id: 'gpt-4' },
                     messages: payloadMessages,
-                    prompt: botLogic,
-                    temperature: 0.5
+                    prompt: text,
+                    image: sentImage // Mengirim data gambar ke backend API chat.js kita!
                 })
             });
 
@@ -443,9 +410,7 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
             if (data.error) balasan = `[Error Sistem]: ${data.error}`;
             else if (typeof data === 'string') balasan = data;
             else if (data && data.text) balasan = data.text;
-            else if (data && data.choices && data.choices.length > 0) balasan = data.choices[0].message.content;
-            else balasan = `M-maaf sayang... responnya aneh: ${JSON.stringify(data).substring(0, 50)}...`;
-
+            
             tampilkanPesan(balasan, 'ai');
             window.chatHistory.push({ role: 'assistant', content: balasan });
             window.simpanSesi(); 
@@ -466,35 +431,23 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
 
     window.salinTeksPesan = function() {
         if (!activeBubbleNode) return;
-        // Ambil teks dari chat biasa atau judul dari downloader card
         const textNode = activeBubbleNode.querySelector('.text') || activeBubbleNode.querySelector('.dl-title');
         if (textNode) {
-            // Gunakan API modern untuk menyalin
             navigator.clipboard.writeText(textNode.innerText).then(() => {
                 window.tutupContextMenu();
                 window.showToast("Teks disalin!");
-            }).catch(err => {
-                window.tutupContextMenu();
-                window.showToast("Gagal menyalin teks.");
             });
-        } else {
-            window.tutupContextMenu();
-        }
+        } else window.tutupContextMenu();
     };
 
     window.hapusPesanSatu = function() {
         if (!activeBubbleNode) return;
-        
-        // Hapus dari memori chatHistory
         const textNode = activeBubbleNode.querySelector('.text') || activeBubbleNode.querySelector('.dl-title');
         if (textNode) {
             const textToDel = textNode.innerText;
-            // Cari data di memori yang isinya mengandung text tersebut dan hapus
             const index = window.chatHistory.findIndex(msg => msg.content && msg.content.includes(textToDel));
             if (index !== -1) window.chatHistory.splice(index, 1);
         }
-
-        // Hapus secara visual dari layar
         activeBubbleNode.remove();
         window.simpanSesi();
         window.tutupContextMenu();
@@ -502,64 +455,64 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
     };
 
     document.addEventListener('DOMContentLoaded', () => {
-        // LONG PRESS DETECTOR AREA CHAT
-        const chatContainer = document.getElementById('chat-messages');
         
-        // Disable klik kanan bawaan (untuk PC/Desktop)
+        // EVENT UNTUK UPLOAD GAMBAR
+        document.getElementById('btn-attach').addEventListener('click', () => {
+            document.getElementById('image-input').click();
+        });
+
+        document.getElementById('image-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                window.pendingImageBase64 = event.target.result;
+                document.getElementById('btn-attach').classList.add('active'); // Ubah warna icon jadi merah
+                window.showToast("Gambar siap dikirim! 🖼️");
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // LONG PRESS DETECTOR AREA CHAT (MEMATIKAN MENU KLIK KANAN BAWAAN)
+        const chatContainer = document.getElementById('chat-messages');
         chatContainer.addEventListener('contextmenu', e => {
             const bubble = e.target.closest('.bubble');
             if (bubble) {
-                e.preventDefault();
+                e.preventDefault(); // MENCEGAH SELECT TEXT BAWAAN HP/PC
                 if(navigator.vibrate) navigator.vibrate(50);
                 activeBubbleNode = bubble.closest('.message-row');
                 document.getElementById('context-menu').classList.add('active');
             }
         });
 
-        // Touch event untuk HP
         chatContainer.addEventListener('touchstart', e => {
             isScrolling = false;
             const bubble = e.target.closest('.bubble');
             if (!bubble) return;
-            
             pressTimer = setTimeout(() => {
                 if (!isScrolling) {
                     if(navigator.vibrate) navigator.vibrate(50);
                     activeBubbleNode = bubble.closest('.message-row');
                     document.getElementById('context-menu').classList.add('active');
                 }
-            }, 500); // Waktu tahan 0.5 detik
+            }, 500); 
         }, {passive: true});
 
-        chatContainer.addEventListener('touchmove', () => {
-            isScrolling = true;
-            clearTimeout(pressTimer);
-        }, {passive: true});
-
+        chatContainer.addEventListener('touchmove', () => { isScrolling = true; clearTimeout(pressTimer); }, {passive: true});
         chatContainer.addEventListener('touchend', () => clearTimeout(pressTimer));
         chatContainer.addEventListener('touchcancel', () => clearTimeout(pressTimer));
 
-        // TOMBOL HAPUS SEMUA (HEADER)
-        document.getElementById('btn-delete').addEventListener('click', () => {
-            document.getElementById('custom-modal').classList.add('active');
-        });
-        document.getElementById('btn-cancel').addEventListener('click', () => {
-            document.getElementById('custom-modal').classList.remove('active');
-        });
+        // EVENT LAINNYA
+        document.getElementById('btn-delete').addEventListener('click', () => document.getElementById('custom-modal').classList.add('active'));
+        document.getElementById('btn-cancel').addEventListener('click', () => document.getElementById('custom-modal').classList.remove('active'));
         document.getElementById('btn-confirm').addEventListener('click', () => {
-            localStorage.removeItem('vierra_history');
-            localStorage.removeItem('vierra_html');
-            window.chatHistory = [];
-            document.getElementById('custom-modal').classList.remove('active');
-            document.getElementById('chat-messages').innerHTML = window.getDefaultChatHTML();
+            localStorage.removeItem('vierra_history'); localStorage.removeItem('vierra_html');
+            window.chatHistory = []; document.getElementById('custom-modal').classList.remove('active');
             window.location.reload();
         });
 
-        // TOMBOL KIRIM
         document.getElementById('btn-send-msg').addEventListener('click', kirimPesan);
-        document.getElementById('input').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') kirimPesan();
-        });
+        document.getElementById('input').addEventListener('keypress', (e) => { if (e.key === 'Enter') kirimPesan(); });
 
         // LOAD DATA
         try {
@@ -568,15 +521,9 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
             if (savedHistory && savedHTML) {
                 window.chatHistory = JSON.parse(savedHistory);
                 if (!Array.isArray(window.chatHistory)) window.chatHistory = [];
-                chatContainer.innerHTML = savedHTML;
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-            } else {
-                chatContainer.innerHTML = window.getDefaultChatHTML();
-            }
-        } catch(e) {
-            window.chatHistory = [];
-            chatContainer.innerHTML = window.getDefaultChatHTML();
-        }
+                chatContainer.innerHTML = savedHTML; chatContainer.scrollTop = chatContainer.scrollHeight;
+            } else chatContainer.innerHTML = window.getDefaultChatHTML();
+        } catch(e) { chatContainer.innerHTML = window.getDefaultChatHTML(); }
     });
 </script>
 </body>
