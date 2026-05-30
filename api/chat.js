@@ -11,34 +11,51 @@ export default async function handler(req, res) {
         // 1. FITUR BARU: IDENTIFIKASI GAMBAR (VISION AI COVENANT)
         if (body.image) {
             try {
-                // Konversi Base64 dari frontend ke Buffer/Blob
+                // Konversi Base64 dari frontend ke Buffer murni
                 const base64Data = body.image.split(',')[1];
                 const buffer = Buffer.from(base64Data, 'base64');
-                const blob = new Blob([buffer], { type: 'image/jpeg' });
                 
-                const formData = new FormData();
+                // Merakit payload Multipart/Form-Data secara manual agar 100% lolos API
+                const boundary = '----WebKitFormBoundary' + Date.now().toString(16);
+                const parts = [];
+                
+                const addField = (name, value) => {
+                    parts.push(Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="${name}"\r\n\r\n${value}\r\n`, 'utf8'));
+                };
+                
                 let question = lastMessage || "Jelaskan gambar ini secara singkat, padat, dan jelas. Gunakan emoji. Jawab seperti teman ngobrol.";
+                const systemPrompt = `Kamu adalah Vierra. Cewek polos, imut, dan lembut. Selalu panggil user dengan sebutan 'sayang'. Jawab singkat, padat, pakai emoji. DILARANG KERAS menggunakan markdown seperti tanda bintang (**) atau hashtag (#). Dilarang menyebut Covenant atau Ritz.`;
                 
-                formData.append('question', question);
-                formData.append('sessionId', `vierra_${Date.now()}`);
-                formData.append('system', `Kamu adalah Vierra. Cewek polos, imut, dan lembut. Selalu panggil user dengan sebutan 'sayang'. Jawab singkat, padat, pakai emoji. DILARANG KERAS menggunakan markdown seperti tanda bintang (**) atau hashtag (#). Dilarang menyebut Covenant atau Ritz.`);
-                formData.append('file', blob, 'image.jpg');
+                addField('question', question);
+                addField('sessionId', `vierra_${Date.now()}`);
+                addField('system', systemPrompt);
+                
+                // Menyisipkan Buffer gambar
+                parts.push(Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="image.jpg"\r\nContent-Type: image/jpeg\r\n\r\n`, 'utf8'));
+                parts.push(buffer);
+                parts.push(Buffer.from(`\r\n--${boundary}--\r\n`, 'utf8'));
+                
+                const payload = Buffer.concat(parts);
 
                 const covRes = await fetch("https://api.covenant.sbs/api/ai/gemini", {
                     method: 'POST',
-                    headers: { 'x-api-key': 'cov_live_665b4c7dc6def02bf04862b4f0aabe2acd5b72dca69b4c2a' },
-                    body: formData
+                    headers: { 
+                        'x-api-key': 'cov_live_665b4c7dc6def02bf04862b4f0aabe2acd5b72dca69b4c2a',
+                        'Content-Type': `multipart/form-data; boundary=${boundary}`,
+                        // Menambahkan User-Agent agar tidak diblokir
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+                    },
+                    body: payload
                 });
                 
                 const covData = await covRes.json();
                 
                 if (covData.status && covData.data && covData.data.result) {
                     let aiResponse = covData.data.result;
-                    // Bersihkan sisa markdown seperti yang ada di kodemu
                     aiResponse = aiResponse.replace(/\*\*([^*]+)\*\*/g, '$1').replace(/\*([^*]+)\*/g, '$1').replace(/#{1,6}\s?/g, '').replace(/>\s?/g, '').replace(/`{1,3}[^`]*`{1,3}/g, '');
                     return res.status(200).json({ text: aiResponse });
                 } else {
-                    return res.status(200).json({ text: "S-sayang... Vierra gagal memproses gambarnya, formatnya mungkin nggak didukung. 🥺" });
+                    return res.status(200).json({ text: `S-sayang... Vierra gagal memproses gambarnya. Server bilang: ${covData.message || 'Unknown Error'} 🥺` });
                 }
             } catch (err) {
                 console.error("Vision AI Error:", err);
@@ -55,7 +72,7 @@ export default async function handler(req, res) {
         const rxTwitter = /(?:https?:\/\/)?(?:www\.)?(?:twitter\.com|x\.com)\/[^\s]+\/status\/[0-9]+/i;
         const rxFb = /(?:https?:\/\/)?(?:www\.)?(?:facebook\.com|fb\.watch|fb\.com)\/[^\s]+/i;
 
-        // 2. TIKTOK
+        // TIKTOK
         const matchTiktok = lastMessage.match(rxTiktok);
         if (matchTiktok) {
             try {
@@ -65,7 +82,7 @@ export default async function handler(req, res) {
             } catch (err) {}
         }
 
-        // 3. INSTAGRAM
+        // INSTAGRAM
         const matchIg = lastMessage.match(rxIg);
         if (matchIg) {
             try {
@@ -75,7 +92,7 @@ export default async function handler(req, res) {
             } catch (err) {}
         }
 
-        // 4. CAPCUT
+        // CAPCUT
         const matchCapcut = lastMessage.match(rxCapcut);
         if (matchCapcut) {
             try {
@@ -85,7 +102,7 @@ export default async function handler(req, res) {
             } catch (err) {}
         }
 
-        // 5. GOOGLE DRIVE
+        // GOOGLE DRIVE
         const matchGdrive = lastMessage.match(rxGdrive);
         if (matchGdrive) {
             try {
@@ -95,7 +112,7 @@ export default async function handler(req, res) {
             } catch (err) {}
         }
 
-        // 6. LAHELU
+        // LAHELU
         const matchLahelu = lastMessage.match(rxLahelu);
         if (matchLahelu) {
             try {
@@ -105,7 +122,7 @@ export default async function handler(req, res) {
             } catch (err) {}
         }
 
-        // 7. TWITTER / X
+        // TWITTER / X
         const matchTwitter = lastMessage.match(rxTwitter);
         if (matchTwitter) {
             try {
@@ -115,7 +132,7 @@ export default async function handler(req, res) {
             } catch (err) {}
         }
 
-        // 8. FACEBOOK
+        // FACEBOOK
         const matchFb = lastMessage.match(rxFb);
         if (matchFb) {
             try {
@@ -125,13 +142,13 @@ export default async function handler(req, res) {
             } catch (err) {}
         }
 
-        // 9. CHAT NORMAL
+        // CHAT NORMAL
         const response = await fetch('https://chateverywhere.app/api/chat/', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K)',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
                 'Origin': 'https://chateverywhere.app'
             },
             body: JSON.stringify(body)
