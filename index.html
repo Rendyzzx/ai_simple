@@ -259,12 +259,15 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
     function bukaModal() { document.getElementById('custom-modal').classList.add('active'); }
     function tutupModal() { document.getElementById('custom-modal').classList.remove('active'); }
 
+    // FUNGSI KONFIRMASI HAPUS YANG SUDAH DIPERBAIKI (FORCE RELOAD)
     function konfirmasiHapus() {
         localStorage.removeItem('vierra_session');
         localStorage.removeItem('vierra_html');
         session = [];
-        document.getElementById('chat-messages').innerHTML = getDefaultChatHTML();
         tutupModal(); 
+        
+        // Memaksa browser merefresh halaman untuk memastikan semua cache & memori memuat ulang dari nol
+        window.location.reload();
     }
 
     async function kirimPesan() {
@@ -297,7 +300,6 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
             const data = await response.json();
             document.getElementById('loading-indicator').style.display = 'none';
             
-            // JIKA RESPON ADALAH DOWNLOADER
             if (data.isDownloader) {
                 renderDownloaderCard(data.platform, data.data);
                 session.push({ role: 'assistant', content: `[Vierra mengirim media dari ${data.platform}]` });
@@ -336,7 +338,6 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    // FUNGSI RENDER MULTI-PLATFORM DOWNLOADER
     function renderDownloaderCard(platform, data) {
         const chatMessages = document.getElementById('chat-messages');
         const div = document.createElement('div');
