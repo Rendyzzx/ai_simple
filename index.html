@@ -68,7 +68,7 @@
         .contact-name { font-size: 16px; font-weight: 500; color: var(--wa-text-main); }
         .header-icons { display: flex; gap: 22px; align-items: center; }
         .header-icons span { color: var(--wa-text-main); font-size: 22px; transition: color 0.2s; }
-        .header-icons span:hover { color: #ff6b6b; } /* Efek merah saat hover icon hapus */
+        .header-icons span:hover { color: #ff6b6b; } 
 
         .chat-area {
             flex: 1; padding: 20px 15px; overflow-y: auto;
@@ -172,6 +172,51 @@
             text-align: center; font-size: 12.5px; color: rgba(255, 255, 255, 0.7); 
             margin-bottom: 8px; display: none; font-weight: 500; flex-shrink: 0;
         }
+
+        /* CUSTOM POP-UP (MODAL) CSS */
+        .modal-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1000;
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1; visibility: visible;
+        }
+        .modal-box {
+            background-color: var(--new-input-bg);
+            width: 85%; max-width: 320px;
+            border-radius: 16px; padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transform: translateY(20px) scale(0.95);
+            transition: transform 0.3s ease;
+            color: var(--wa-text-main);
+            text-align: center;
+        }
+        .modal-overlay.active .modal-box {
+            transform: translateY(0) scale(1);
+        }
+        .modal-title { 
+            font-size: 18px; font-weight: 600; margin-bottom: 12px; 
+            color: #ff6b6b; /* Warna aksen merah muda */
+        }
+        .modal-text { 
+            font-size: 14.5px; color: #ccc; margin-bottom: 24px; line-height: 1.5; 
+        }
+        .modal-actions { 
+            display: flex; gap: 12px; 
+        }
+        .modal-btn {
+            flex: 1; padding: 12px 0; border: none; border-radius: 10px;
+            font-size: 14.5px; font-weight: 600; cursor: pointer; transition: 0.2s;
+            font-family: 'Roboto', sans-serif;
+        }
+        .modal-btn.cancel { background-color: #333; color: #fff; }
+        .modal-btn.cancel:hover { background-color: #444; }
+        .modal-btn.confirm { background-color: #d14747; color: #fff; }
+        .modal-btn.confirm:hover { background-color: #b53838; }
     </style>
 </head>
 <body>
@@ -187,7 +232,7 @@
         </div>
         <div class="header-icons">
             <span class="material-symbols-rounded">videocam</span>
-            <span class="material-symbols-rounded" onclick="hapusSesi()" title="Hapus Obrolan">delete</span>
+            <span class="material-symbols-rounded" onclick="bukaModal()" title="Hapus Obrolan">delete</span>
             <span class="material-symbols-rounded">more_vert</span>
         </div>
     </div>
@@ -207,6 +252,17 @@
             <span class="material-symbols-rounded">arrow_upward</span> 
         </button>
     </div>
+
+    <div class="modal-overlay" id="custom-modal">
+        <div class="modal-box">
+            <div class="modal-title">Hapus Obrolan</div>
+            <div class="modal-text">S-sayang... kamu beneran mau hapus semua memori obrolan kita?</div>
+            <div class="modal-actions">
+                <button class="modal-btn cancel" onclick="tutupModal()">Batal</button>
+                <button class="modal-btn confirm" onclick="konfirmasiHapus()">Oke</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -224,7 +280,6 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
         return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
     }
 
-    // PESAN DEFAULT SAAT PERTAMA KALI DIBUKA / DIHAPUS
     function getDefaultChatHTML() {
         return `
             <div class="message-row ai">
@@ -236,7 +291,6 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
         `;
     }
 
-    // SAAT WEB DIMUAT (LOAD LOCAL STORAGE)
     window.onload = () => {
         const savedSession = localStorage.getItem('vierra_session');
         const savedHTML = localStorage.getItem('vierra_html');
@@ -252,20 +306,26 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
         }
     };
 
-    // FUNGSI SIMPAN KE LOCAL STORAGE
     function simpanSesi() {
         localStorage.setItem('vierra_session', JSON.stringify(session));
         localStorage.setItem('vierra_html', document.getElementById('chat-messages').innerHTML);
     }
 
-    // FUNGSI HAPUS SESI (TOMBOL TONG SAMPAH)
-    function hapusSesi() {
-        if (confirm("S-sayang... kamu beneran mau hapus semua obrolan kita?")) {
-            localStorage.removeItem('vierra_session');
-            localStorage.removeItem('vierra_html');
-            session = [];
-            document.getElementById('chat-messages').innerHTML = getDefaultChatHTML();
-        }
+    // FUNGSI KONTROL CUSTOM MODAL
+    function bukaModal() {
+        document.getElementById('custom-modal').classList.add('active');
+    }
+
+    function tutupModal() {
+        document.getElementById('custom-modal').classList.remove('active');
+    }
+
+    function konfirmasiHapus() {
+        localStorage.removeItem('vierra_session');
+        localStorage.removeItem('vierra_html');
+        session = [];
+        document.getElementById('chat-messages').innerHTML = getDefaultChatHTML();
+        tutupModal(); // Tutup pop-up setelah menghapus
     }
 
     async function kirimPesan() {
@@ -275,7 +335,7 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
 
         tampilkanPesan(text, 'user');
         session.push({ role: 'user', content: text });
-        simpanSesi(); // Simpan saat user ngirim pesan
+        simpanSesi(); 
 
         input.value = '';
         document.getElementById('loading-indicator').style.display = 'block';
@@ -298,15 +358,13 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
             const data = await response.json();
             document.getElementById('loading-indicator').style.display = 'none';
             
-            // CEK TIKTOK DATA
             if (data.isTiktok) {
                 tampilkanTiktok(data.tiktokData);
                 session.push({ role: 'assistant', content: "[Vierra berhasil mengirimkan preview video TikTok]" });
-                simpanSesi(); // Simpan saat AI ngirim TikTok
+                simpanSesi(); 
                 return;
             }
 
-            // NORMAL AI CHAT
             let balasan = '';
             if (data.error) balasan = `[Error Sistem]: ${data.error}`;
             else if (typeof data === 'string') balasan = data;
@@ -316,7 +374,7 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
 
             tampilkanPesan(balasan, 'ai');
             session.push({ role: 'assistant', content: balasan });
-            simpanSesi(); // Simpan saat AI balas teks
+            simpanSesi(); 
 
         } catch (e) {
             document.getElementById('loading-indicator').style.display = 'none';
@@ -345,7 +403,6 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    // FUNGSI TIKTOK DENGAN REFERRER POLICY
     function tampilkanTiktok(data) {
         const chatMessages = document.getElementById('chat-messages');
         const div = document.createElement('div');
@@ -362,7 +419,6 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
             if (hdData) hdUrl = hdData.url || hdData.backup;
         }
 
-        // referrerpolicy="no-referrer" ditambahkan di img agar gambar tidak diblokir TikTok
         div.innerHTML = `
             <div class="bubble tiktok-card">
                 <img src="${data.thumbnail}" class="tiktok-thumb" alt="TikTok Thumbnail" referrerpolicy="no-referrer" onerror="this.src='https://placehold.co/260x160/222222/FFFFFF?text=No+Thumbnail'">
