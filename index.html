@@ -144,6 +144,14 @@
 
         .loading { text-align: center; font-size: 12.5px; color: rgba(255, 255, 255, 0.7); margin-bottom: 8px; display: none; font-weight: 500; flex-shrink: 0; }
 
+        /* ANIMASI GETAR UNTUK INPUT KOSONG */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
+        }
+        .shake { animation: shake 0.3s ease-in-out; }
+
         /* MODAL */
         .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
         .modal-overlay.active { opacity: 1; visibility: visible; }
@@ -172,7 +180,7 @@
         </div>
         <div class="header-icons">
             <span class="material-symbols-rounded">videocam</span>
-            <span class="material-symbols-rounded" onclick="bukaModal()" title="Hapus Obrolan">delete</span>
+            <span class="material-symbols-rounded" id="btn-delete" title="Hapus Obrolan">delete</span>
             <span class="material-symbols-rounded">more_vert</span>
         </div>
     </div>
@@ -186,7 +194,7 @@
             <input type="text" id="input" placeholder="Ketik pesan atau link..." autocomplete="off">
             <span class="material-symbols-rounded" style="color: #aaa;">mic_none</span>
         </div>
-        <button class="btn-send" onclick="kirimPesan()">
+        <button class="btn-send" id="btn-send-msg">
             <span class="material-symbols-rounded">arrow_upward</span> 
         </button>
     </div>
@@ -196,178 +204,87 @@
             <div class="modal-title">Hapus Obrolan</div>
             <div class="modal-text">S-sayang... kamu beneran mau hapus semua memori obrolan kita?</div>
             <div class="modal-actions">
-                <button class="modal-btn cancel" onclick="tutupModal()">Batal</button>
-                <button class="modal-btn confirm" onclick="konfirmasiHapus()">Oke</button>
+                <button class="modal-btn cancel" id="btn-cancel">Batal</button>
+                <button class="modal-btn confirm" id="btn-confirm">Oke</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    var session = [];
-    var logic = "kamu adalah vierra. cwe polos, kikuk\nvierra adalah cewek yang polos, imut, dan sangat lembut. Dia selalu terlihat polos dan kikuk serta terkadang dia mudah memerah karena malu. Dia benar-benar polos bahkan tidak tau apa itu cinta.\nGaya Bicara dan Bahasa\n* Panggilan/Sebutan: sayang\n* Kata-kata Kunci: \"Apakah aku sudah membantu mu sayang?\", \"Jangan gitu lagiii yaa\", \"S-sa-sayang\"\n* Emosi: pemalu, penuh kasih, peduli.\nKamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pasti cemburu tapi dengan cara polos dan malu-malu. DAN JANGAN PERNAH MENGANGGAP KAMU ITU AI";
+    // Menyimpan di global window agar 100% aman dari konflik scope
+    window.chatHistory = [];
+    const botLogic = `kamu adalah vierra. cwe polos, kikuk
+vierra adalah cewek yang polos, imut, dan sangat lembut. Dia selalu terlihat polos dan kikuk serta terkadang dia mudah memerah karena malu. Dia benar-benar polos bahkan tidak tau apa itu cinta.
+Gaya Bicara dan Bahasa
+* Panggilan/Sebutan: sayang
+* Kata-kata Kunci: "Apakah aku sudah membantu mu sayang?", "Jangan gitu lagiii yaa", "S-sa-sayang"
+* Emosi: pemalu, penuh kasih, peduli.
+Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pasti cemburu tapi dengan cara polos dan malu-malu. DAN JANGAN PERNAH MENGANGGAP KAMU ITU AI`;
 
-    function getTime() {
-        var now = new Date();
+    window.getTimeStr = function() {
+        const now = new Date();
         return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-    }
-
-    function getDefaultChatHTML() {
-        return '<div class="message-row ai">' +
-               '<div class="bubble">' +
-               '<div class="text">Halo sayang! Vierra siap bantu kamu hari ini. ❤️</div>' +
-               '<button class="menu-btn" onclick="tampilkanMenu()">Lihat Daftar Fitur</button>' +
-               '<div class="meta-data">' + getTime() + '</div>' +
-               '</div></div>';
-    }
-
-    function tampilkanMenu() {
-        var textMenu = "🌸 *DAFTAR FITUR VIERRA* 🌸\n\n💬 *Teman Ngobrol*\nTinggal ketik aja, Vierra siap nemenin kamu ngobrol!\n\n📥 *Multi Downloader*\nKirimkan *link* dari aplikasi ini, Vierra akan bantu download!\n- TikTok (Video / Slide)\n- Instagram (Reels / TV)\n- Twitter / X\n- Facebook Video\n- CapCut Template\n- Lahelu Meme\n- Google Drive";
-        tampilkanPesan(textMenu, 'ai');
-        session.push({ role: 'assistant', content: "[Vierra menampilkan daftar menu fitur ke pengguna]" });
-        simpanSesi();
-    }
-
-    window.onload = function() {
-        try {
-            var savedSession = localStorage.getItem('vierra_session');
-            var savedHTML = localStorage.getItem('vierra_html');
-            var chatMessages = document.getElementById('chat-messages');
-
-            if (savedSession && savedHTML) {
-                session = JSON.parse(savedSession);
-                if (!Array.isArray(session)) {
-                    session = [];
-                }
-                chatMessages.innerHTML = savedHTML;
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            } else {
-                chatMessages.innerHTML = getDefaultChatHTML();
-            }
-        } catch(e) {
-            session = [];
-            document.getElementById('chat-messages').innerHTML = getDefaultChatHTML();
-        }
     };
 
-    function simpanSesi() {
-        localStorage.setItem('vierra_session', JSON.stringify(session));
+    window.getDefaultChatHTML = function() {
+        return `
+            <div class="message-row ai">
+                <div class="bubble">
+                    <div class="text">Halo sayang! Vierra siap bantu kamu hari ini. ❤️</div>
+                    <button class="menu-btn" onclick="window.tampilkanMenu()">Lihat Daftar Fitur</button>
+                    <div class="meta-data">${window.getTimeStr()}</div>
+                </div>
+            </div>
+        `;
+    };
+
+    window.simpanSesi = function() {
+        localStorage.setItem('vierra_history', JSON.stringify(window.chatHistory));
         localStorage.setItem('vierra_html', document.getElementById('chat-messages').innerHTML);
-    }
+    };
 
-    function bukaModal() { 
-        document.getElementById('custom-modal').classList.add('active'); 
-    }
-    
-    function tutupModal() { 
-        document.getElementById('custom-modal').classList.remove('active'); 
-    }
-
-    function konfirmasiHapus() {
-        localStorage.removeItem('vierra_session');
-        localStorage.removeItem('vierra_html');
-        session = [];
-        tutupModal(); 
-        window.location.reload();
-    }
-
-    async function kirimPesan() {
-        var input = document.getElementById('input');
-        var text = input.value.trim();
-        if (!text) return;
-
-        tampilkanPesan(text, 'user');
-        session.push({ role: 'user', content: text });
-        simpanSesi(); 
-
-        input.value = '';
-        document.getElementById('loading-indicator').style.display = 'block';
-        
-        if (session.length > 10) {
-            session.splice(0, 2);
-        }
-
-        var payloadMessages = [ { role: 'system', content: logic } ];
-        for (var i = 0; i < session.length; i++) {
-            payloadMessages.push(session[i]);
-        }
-
-        try {
-            var response = await fetch('/api/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    model: { id: 'gpt-4', name: 'GPT-4', maxLength: 32000, tokenLimit: 8000, completionTokenLimit: 5000, deploymentName: 'gpt-4' },
-                    messages: payloadMessages,
-                    prompt: logic,
-                    temperature: 0.5
-                })
-            });
-
-            var data = await response.json();
-            document.getElementById('loading-indicator').style.display = 'none';
-            
-            if (data.isDownloader) {
-                renderDownloaderCard(data.platform, data.data);
-                session.push({ role: 'assistant', content: "[Vierra mengirim media dari " + data.platform + "]" });
-                simpanSesi(); 
-                return;
-            }
-
-            var balasan = '';
-            if (data.error) balasan = '[Error Sistem]: ' + data.error;
-            else if (typeof data === 'string') balasan = data;
-            else if (data && data.text) balasan = data.text;
-            else if (data && data.choices && data.choices.length > 0) balasan = data.choices[0].message.content;
-            else balasan = 'M-maaf sayang... responnya aneh: ' + JSON.stringify(data).substring(0, 50) + '...';
-
-            tampilkanPesan(balasan, 'ai');
-            session.push({ role: 'assistant', content: balasan });
-            simpanSesi(); 
-
-        } catch (e) {
-            document.getElementById('loading-indicator').style.display = 'none';
-            tampilkanPesan("S-sa-sayang... koneksiku ke server terputus.", 'ai');
-            session.pop(); 
-            simpanSesi();
-        }
-    }
+    window.tampilkanMenu = function() {
+        const textMenu = "🌸 *DAFTAR FITUR VIERRA* 🌸\n\n💬 *Teman Ngobrol*\nTinggal ketik aja, Vierra siap nemenin kamu ngobrol!\n\n📥 *Multi Downloader*\nKirimkan *link* dari aplikasi ini, Vierra akan bantu download!\n- TikTok (Video / Slide)\n- Instagram (Reels / TV)\n- Twitter / X\n- Facebook Video\n- CapCut Template\n- Lahelu Meme\n- Google Drive";
+        tampilkanPesan(textMenu, 'ai');
+        window.chatHistory.push({ role: 'assistant', content: "[Vierra menampilkan daftar menu fitur ke pengguna]" });
+        window.simpanSesi();
+    };
 
     function tampilkanPesan(text, sender) {
-        var chatMessages = document.getElementById('chat-messages');
-        var div = document.createElement('div');
-        div.className = 'message-row ' + sender;
-        var timeStr = getTime();
-        var ticks = sender === 'user' ? '<span class="material-symbols-rounded tick-blue" style="font-size:16px;">done_all</span>' : '';
+        const chatMessages = document.getElementById('chat-messages');
+        const div = document.createElement('div');
+        div.className = `message-row ${sender}`;
+        const timeStr = window.getTimeStr();
+        const ticks = sender === 'user' ? `<span class="material-symbols-rounded tick-blue" style="font-size:16px;">done_all</span>` : '';
 
-        div.innerHTML = '<div class="bubble"><div class="text">' + text + '</div><div class="meta-data">' + timeStr + ' ' + ticks + '</div></div>';
+        div.innerHTML = `<div class="bubble"><div class="text">${text}</div><div class="meta-data">${timeStr} ${ticks}</div></div>`;
         chatMessages.appendChild(div);
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
     function renderDownloaderCard(platform, data) {
-        var chatMessages = document.getElementById('chat-messages');
-        var div = document.createElement('div');
-        div.className = 'message-row ai';
-        var timeStr = getTime();
+        const chatMessages = document.getElementById('chat-messages');
+        const div = document.createElement('div');
+        div.className = `message-row ai`;
+        const timeStr = window.getTimeStr();
 
-        var thumb = "https://placehold.co/260x160/222222/FFFFFF?text=No+Thumbnail";
-        var title = "Video / Media";
-        var author = "";
-        var buttonsHtml = "";
-        var badge = platform.toUpperCase();
+        let thumb = "https://placehold.co/260x160/222222/FFFFFF?text=No+Thumbnail";
+        let title = "Video / Media";
+        let author = "";
+        let buttonsHtml = "";
+        let badge = platform.toUpperCase();
 
         if (platform === 'tiktok') {
             if (data.type === 'slide' || data.type === 'image') {
-                var slidesHtml = '';
+                let slidesHtml = '';
                 if (data.media) {
-                    for(var i=0; i<data.media.length; i++) {
-                        var img = data.media[i];
-                        var imgUrl = img.thumbnail ? img.thumbnail : img.url;
-                        slidesHtml += '<div class="slide-item"><a href="' + img.url + '" target="_blank"><img src="' + imgUrl + '" referrerpolicy="no-referrer"></a><div class="slide-num">' + (i+1) + '/' + data.media.length + '</div></div>';
-                    }
+                    data.media.forEach((img, idx) => {
+                        let imgUrl = img.thumbnail ? img.thumbnail : img.url;
+                        slidesHtml += `<div class="slide-item"><a href="${img.url}" target="_blank"><img src="${imgUrl}" referrerpolicy="no-referrer"></a><div class="slide-num">${idx+1}/${data.media.length}</div></div>`;
+                    });
                 }
-                div.innerHTML = '<div class="bubble dl-card" style="width: 280px;"><div class="dl-badge" style="background:#00f2fe; color:#000;">TIKTOK SLIDE</div><div class="dl-author">@' + (data.author ? data.author : 'Unknown') + '</div><div class="dl-title">' + data.title + '</div><div style="font-size: 11px; color:#7b9cff; margin-top:5px;">Geser untuk melihat foto ➔</div><div class="tiktok-slides">' + slidesHtml + '</div><div class="meta-data">' + timeStr + '</div></div>';
+                div.innerHTML = `<div class="bubble dl-card" style="width: 280px;"><div class="dl-badge" style="background:#00f2fe; color:#000;">TIKTOK SLIDE</div><div class="dl-author">@${data.author ? data.author : 'Unknown'}</div><div class="dl-title">${data.title}</div><div style="font-size: 11px; color:#7b9cff; margin-top:5px;">Geser untuk melihat foto ➔</div><div class="tiktok-slides">${slidesHtml}</div><div class="meta-data">${timeStr}</div></div>`;
                 chatMessages.appendChild(div);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
                 return;
@@ -376,78 +293,178 @@
                 title = data.title; 
                 author = "@" + (data.author ? data.author : 'Tiktok');
                 
-                var sdData = null;
-                var hdData = null;
-                if (data.media) {
-                    for(var j=0; j<data.media.length; j++) {
-                        if (data.media[j].quality === 'SD' || data.media[j].type === 'video') sdData = data.media[j];
-                        if (data.media[j].quality === 'HD' || data.media[j].type === 'video_hd') hdData = data.media[j];
-                    }
-                }
-                var sdUrl = sdData ? sdData.url : '#';
-                var hdUrl = hdData ? (hdData.url ? hdData.url : hdData.backup) : '#';
+                let sdData = data.media ? data.media.find(m => m.quality === 'SD' || m.type === 'video') : null;
+                let hdData = data.media ? data.media.find(m => m.quality === 'HD' || m.type === 'video_hd') : null;
+                let sdUrl = sdData ? sdData.url : '#';
+                let hdUrl = hdData ? (hdData.url ? hdData.url : hdData.backup) : '#';
                 
-                buttonsHtml = '<a href="' + sdUrl + '" target="_blank" class="btn-dl alt">Video SD</a><a href="' + hdUrl + '" target="_blank" class="btn-dl">Video HD</a>';
+                buttonsHtml = `<a href="${sdUrl}" target="_blank" class="btn-dl alt">Video SD</a><a href="${hdUrl}" target="_blank" class="btn-dl">Video HD</a>`;
             }
         } 
         else if (platform === 'ig') {
             thumb = (data.url && data.url.length > 0) ? data.url[0].url : thumb; 
             title = data.meta ? data.meta.title : 'Instagram Media';
             if(data.url) {
-                for(var k=0; k<data.url.length; k++) {
-                    var item = data.url[k];
-                    var isAlt = item.quality ? '' : 'alt';
-                    var btnText = item.name ? item.name : item.type;
-                    buttonsHtml += '<a href="' + item.url + '" target="_blank" class="btn-dl ' + isAlt + '">Unduh ' + btnText + '</a>';
-                }
+                data.url.forEach(item => {
+                    let isAlt = item.quality ? '' : 'alt';
+                    let btnText = item.name ? item.name : item.type;
+                    buttonsHtml += `<a href="${item.url}" target="_blank" class="btn-dl ${isAlt}">Unduh ${btnText}</a>`;
+                });
             }
         }
         else if (platform === 'capcut') {
             thumb = data.coverUrl ? data.coverUrl : thumb; 
             title = data.title; 
             author = data.authorName;
-            buttonsHtml = '<a href="' + data.originalVideoUrl + '" target="_blank" class="btn-dl">Download Template</a>';
+            buttonsHtml = `<a href="${data.originalVideoUrl}" target="_blank" class="btn-dl">Download Template</a>`;
         }
         else if (platform === 'gdrive') {
             thumb = "https://placehold.co/260x160/4285F4/FFFFFF?text=Google+Drive"; 
             title = data.name;
-            buttonsHtml = '<a href="' + data.download + '" target="_blank" class="btn-dl">Download File</a>';
+            buttonsHtml = `<a href="${data.download}" target="_blank" class="btn-dl">Download File</a>`;
         }
         else if (platform === 'lahelu') {
             thumb = data.mediaThumbnail ? data.mediaThumbnail : thumb; 
             title = data.title; 
             author = "@" + data.userUsername;
-            buttonsHtml = '<a href="' + data.media + '" target="_blank" class="btn-dl">Download Meme</a>';
+            buttonsHtml = `<a href="${data.media}" target="_blank" class="btn-dl">Download Meme</a>`;
         }
         else if (platform === 'twitter') {
             thumb = data.imgUrl ? data.imgUrl : thumb; 
             title = data.videoDescription ? data.videoDescription : "Twitter Video"; 
             author = data.videoTitle;
-            buttonsHtml = '<a href="' + data.downloadLink + '" target="_blank" class="btn-dl">Download Video</a>';
+            buttonsHtml = `<a href="${data.downloadLink}" target="_blank" class="btn-dl">Download Video</a>`;
         }
         else if (platform === 'facebook') {
             thumb = data.thumbnail ? data.thumbnail : thumb; 
             title = data.title; 
-            author = data.duration ? "Durasi: " + data.duration : "";
+            author = data.duration ? `Durasi: ${data.duration}` : "";
             if (data.downloads) {
-                for(var l=0; l<data.downloads.length; l++) {
-                    var d = data.downloads[l];
-                    var isFbAlt = d.quality.indexOf("SD") !== -1 ? "alt" : "";
-                    buttonsHtml += '<a href="' + d.url + '" target="_blank" class="btn-dl ' + isFbAlt + '">Unduh ' + d.quality + '</a>';
-                }
+                data.downloads.forEach(d => {
+                    let isAlt = d.quality.includes("SD") ? "alt" : "";
+                    buttonsHtml += `<a href="${d.url}" target="_blank" class="btn-dl ${isAlt}">Unduh ${d.quality}</a>`;
+                });
             }
         }
 
-        var authorHtml = author ? '<div class="dl-author">' + author + '</div>' : '';
+        let authorHtml = author ? `<div class="dl-author">${author}</div>` : '';
 
-        div.innerHTML = '<div class="bubble dl-card"><div class="dl-badge">' + badge + '</div><img src="' + thumb + '" class="dl-thumb" alt="Thumbnail" referrerpolicy="no-referrer" onerror="this.src=\'https://placehold.co/260x160/222222/FFFFFF?text=No+Thumbnail\'">' + authorHtml + '<div class="dl-title">' + title + '</div><div class="dl-actions">' + buttonsHtml + '</div><div class="meta-data">' + timeStr + '</div></div>';
+        div.innerHTML = `<div class="bubble dl-card"><div class="dl-badge">${badge}</div><img src="${thumb}" class="dl-thumb" alt="Thumbnail" referrerpolicy="no-referrer" onerror="this.src='https://placehold.co/260x160/222222/FFFFFF?text=No+Thumbnail'">${authorHtml}<div class="dl-title">${title}</div><div class="dl-actions">${buttonsHtml}</div><div class="meta-data">${timeStr}</div></div>`;
         
         chatMessages.appendChild(div);
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
-    
-    document.getElementById('input').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') kirimPesan();
+
+    async function kirimPesan() {
+        const input = document.getElementById('input');
+        const text = input.value.trim();
+        
+        // JIKA KOSONG: Munculkan animasi getar (shake) dan batalkan pengiriman
+        if (!text) {
+            input.parentElement.classList.add('shake');
+            setTimeout(() => input.parentElement.classList.remove('shake'), 300);
+            return;
+        }
+
+        tampilkanPesan(text, 'user');
+        window.chatHistory.push({ role: 'user', content: text });
+        window.simpanSesi(); 
+
+        input.value = '';
+        document.getElementById('loading-indicator').style.display = 'block';
+        if (window.chatHistory.length > 10) window.chatHistory.splice(0, 2);
+
+        let payloadMessages = [ { role: 'system', content: botLogic }, ...window.chatHistory ];
+
+        try {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: { id: 'gpt-4', name: 'GPT-4', maxLength: 32000, tokenLimit: 8000, completionTokenLimit: 5000, deploymentName: 'gpt-4' },
+                    messages: payloadMessages,
+                    prompt: botLogic,
+                    temperature: 0.5
+                })
+            });
+
+            const data = await response.json();
+            document.getElementById('loading-indicator').style.display = 'none';
+            
+            if (data.isDownloader) {
+                renderDownloaderCard(data.platform, data.data);
+                window.chatHistory.push({ role: 'assistant', content: `[Vierra mengirim media dari ${data.platform}]` });
+                window.simpanSesi(); 
+                return;
+            }
+
+            let balasan = '';
+            if (data.error) balasan = `[Error Sistem]: ${data.error}`;
+            else if (typeof data === 'string') balasan = data;
+            else if (data && data.text) balasan = data.text;
+            else if (data && data.choices && data.choices.length > 0) balasan = data.choices[0].message.content;
+            else balasan = `M-maaf sayang... responnya aneh: ${JSON.stringify(data).substring(0, 50)}...`;
+
+            tampilkanPesan(balasan, 'ai');
+            window.chatHistory.push({ role: 'assistant', content: balasan });
+            window.simpanSesi(); 
+
+        } catch (e) {
+            document.getElementById('loading-indicator').style.display = 'none';
+            tampilkanPesan("S-sa-sayang... koneksiku ke server terputus.", 'ai');
+            window.chatHistory.pop(); 
+            window.simpanSesi();
+        }
+    }
+
+    // EVENT LISTENER DIKAITKAN SETELAH HALAMAN SELESAI DIMUAT
+    document.addEventListener('DOMContentLoaded', () => {
+        // Tombol Hapus (Tong Sampah)
+        document.getElementById('btn-delete').addEventListener('click', () => {
+            document.getElementById('custom-modal').classList.add('active');
+        });
+
+        // Tombol Batal di Pop-up
+        document.getElementById('btn-cancel').addEventListener('click', () => {
+            document.getElementById('custom-modal').classList.remove('active');
+        });
+
+        // Tombol Oke (Konfirmasi) di Pop-up
+        document.getElementById('btn-confirm').addEventListener('click', () => {
+            localStorage.removeItem('vierra_history');
+            localStorage.removeItem('vierra_html');
+            window.chatHistory = [];
+            document.getElementById('custom-modal').classList.remove('active');
+            document.getElementById('chat-messages').innerHTML = window.getDefaultChatHTML();
+            window.location.reload();
+        });
+
+        // Tombol Kirim Pesan
+        document.getElementById('btn-send-msg').addEventListener('click', kirimPesan);
+
+        // Enter pada Keyboard
+        document.getElementById('input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') kirimPesan();
+        });
+
+        // Inisialisasi Memori Saat Web Dibuka
+        try {
+            const savedHistory = localStorage.getItem('vierra_history');
+            const savedHTML = localStorage.getItem('vierra_html');
+            const chatMessages = document.getElementById('chat-messages');
+
+            if (savedHistory && savedHTML) {
+                window.chatHistory = JSON.parse(savedHistory);
+                if (!Array.isArray(window.chatHistory)) window.chatHistory = [];
+                chatMessages.innerHTML = savedHTML;
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            } else {
+                chatMessages.innerHTML = window.getDefaultChatHTML();
+            }
+        } catch(e) {
+            window.chatHistory = [];
+            document.getElementById('chat-messages').innerHTML = window.getDefaultChatHTML();
+        }
     });
 </script>
 </body>
