@@ -98,7 +98,7 @@
 
         /* TIKTOK PREVIEW CARD CSS */
         .tiktok-card {
-            width: 260px; /* Lebar card diperbesar sedikit */
+            width: 260px;
             padding: 12px;
             gap: 10px;
         }
@@ -261,8 +261,8 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
             // CEK JIKA BALASAN ADALAH DATA TIKTOK
             if (data.isTiktok) {
                 tampilkanTiktok(data.tiktokData);
-                // Tambahkan jejak abstrak ke memori agar bot tahu dia habis kirim video
-                session.push({ role: 'assistant', content: "[Vierra berhasil mengirimkan preview video TikTok]" });
+                // Tambahkan jejak ke memori agar AI ingat habis ngasih video
+                session.push({ role: 'assistant', content: "[Vierra berhasil mengirimkan preview video TikTok ke pengguna]" });
                 return;
             }
 
@@ -303,7 +303,7 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    // FUNGSI BARU UNTUK MERENDER KARTU TIKTOK
+    // FUNGSI KHUSUS UNTUK MERENDER KARTU TIKTOK
     function tampilkanTiktok(data) {
         const chatMessages = document.getElementById('chat-messages');
         const div = document.createElement('div');
@@ -311,17 +311,16 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
         
         const timeStr = getTime();
         
-        // Memilah link SD dan HD dari array media
+        // Memilih link SD dan HD
         let sdUrl = '#';
         let hdUrl = '#';
         if (data.media) {
             const sdData = data.media.find(m => m.quality === 'SD' || m.type === 'video');
             const hdData = data.media.find(m => m.quality === 'HD' || m.type === 'video_hd');
             if (sdData) sdUrl = sdData.url;
-            if (hdData) hdUrl = hdData.url;
+            if (hdData) hdUrl = hdData.url || hdData.backup;
         }
 
-        // Render HTML khusus TikTok Card
         div.innerHTML = `
             <div class="bubble tiktok-card">
                 <img src="${data.thumbnail}" class="tiktok-thumb" alt="TikTok Thumbnail">
