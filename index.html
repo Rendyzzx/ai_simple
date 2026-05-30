@@ -88,7 +88,7 @@
         /* AREA CHAT */
         .chat-area {
             flex: 1; padding: 20px 15px; overflow-y: auto;
-            display: flex; flex-direction: column; gap: 8px; /* Jarak antar pesan sedikit lebih longgar */
+            display: flex; flex-direction: column; gap: 8px; 
             -webkit-overflow-scrolling: touch;
         }
 
@@ -96,11 +96,12 @@
         .message-row.user { justify-content: flex-end; }
         .message-row.ai { justify-content: flex-start; }
 
-        /* BUBBLE CHAT MODERN (Gaya Bersih tanpa ekor aneh) */
+        /* BUBBLE CHAT DIPERBAIKI (Lebih ramping) */
         .bubble {
-            max-width: 85%; 
-            padding: 10px 16px; /* Lebih luas agar teks enak dibaca */
-            font-size: 15.5px; line-height: 1.5; color: var(--wa-text-main);
+            max-width: 80%; 
+            width: fit-content; /* Memastikan gelembung membungkus teks dengan presisi */
+            padding: 6px 12px 6px 12px; /* Padding dikurangi agar tidak gemuk untuk teks pendek */
+            font-size: 15px; line-height: 1.4; color: var(--wa-text-main);
             position: relative; word-wrap: break-word; 
             display: flex; flex-direction: column;
         }
@@ -108,17 +109,17 @@
         /* Radius Asimetris Halus ala iMessage / UI Modern */
         .message-row.ai .bubble { 
             background-color: var(--bubble-ai-bg); 
-            border-radius: 20px 20px 20px 4px; /* Kotak melengkung halus, siku tumpul di kiri bawah */
+            border-radius: 18px 18px 18px 4px; 
         }
 
         .message-row.user .bubble { 
             background-color: var(--bubble-user-bg); 
-            border-radius: 20px 20px 4px 20px; /* Siku tumpul di kanan bawah */
+            border-radius: 18px 18px 4px 18px; 
         }
 
         .meta-data {
             font-size: 11px; color: rgba(255, 255, 255, 0.6); align-self: flex-end;
-            margin-top: 5px; 
+            margin-top: 2px; /* Jarak lebih rapat ke teks */
             display: flex; align-items: center; gap: 4px;
         }
         .tick-blue { color: #53bdeb; font-size: 14px; font-variation-settings: 'FILL' 1; }
