@@ -14,13 +14,16 @@
             --wa-bg: #0b141a;
             --wa-header: #1f2c34;
             --wa-chat-bg: #0b141a; 
-            --wa-bubble-ai: #202c33;
-            --wa-bubble-user: #801c31; 
-            --wa-text-main: #e9edef;
-            --wa-text-meta: #8696a0;
+            --wa-text-main: #ffffff;
             --wa-icon-color: #d1d1d1;
+            
+            /* TEMA MODERN BARU */
             --new-input-bg: #222222;
-            --new-send-bg: #284297; 
+            --new-send-bg: #284297; /* Biru Gelap Modern */
+            
+            /* Warna Bubble Disamakan dengan Konsep Input Bar */
+            --bubble-ai-bg: #222222; 
+            --bubble-user-bg: #284297;
         }
 
         html, body {
@@ -47,9 +50,7 @@
             width: 100%; max-width: 450px; 
             height: 100dvh; 
             background-color: var(--wa-chat-bg);
-            /* PERUBAHAN WALLPAPER BARU */
             background-image: url('https://j.top4top.io/p_3802zjlsl0.jpg');
-            /* Penyesuaian agar gambar pas di layar HP */
             background-size: cover;
             background-position: center;
             background-blend-mode: overlay; opacity: 0.95;
@@ -78,22 +79,16 @@
         }
         .header-left { display: flex; align-items: center; gap: 8px; cursor: pointer; }
         .header-left .back-btn { margin-right: 2px; color: var(--wa-text-main); font-size: 24px; }
-        
-        /* PERUBAHAN FOTO PROFIL BARU */
         .profile-pic { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
-        
         .contact-info { display: flex; flex-direction: column; margin-left: 5px; }
-        
-        /* PERUBAHAN NAMA BOT BARU */
         .contact-name { font-size: 16px; font-weight: 500; color: var(--wa-text-main); }
-        
         .header-icons { display: flex; gap: 22px; align-items: center; }
         .header-icons span { color: var(--wa-text-main); font-size: 22px; }
 
         /* AREA CHAT */
         .chat-area {
             flex: 1; padding: 20px 15px; overflow-y: auto;
-            display: flex; flex-direction: column; gap: 6px; 
+            display: flex; flex-direction: column; gap: 8px; /* Jarak antar pesan sedikit lebih longgar */
             -webkit-overflow-scrolling: touch;
         }
 
@@ -101,31 +96,31 @@
         .message-row.user { justify-content: flex-end; }
         .message-row.ai { justify-content: flex-start; }
 
+        /* BUBBLE CHAT MODERN (Gaya Bersih tanpa ekor aneh) */
         .bubble {
             max-width: 85%; 
-            padding: 8px 12px 8px 14px; 
-            font-size: 15.5px; line-height: 1.45; color: var(--wa-text-main);
+            padding: 10px 16px; /* Lebih luas agar teks enak dibaca */
+            font-size: 15.5px; line-height: 1.5; color: var(--wa-text-main);
             position: relative; word-wrap: break-word; 
-            box-shadow: 0 1px 1.5px rgba(0,0,0,0.15); 
             display: flex; flex-direction: column;
         }
 
+        /* Radius Asimetris Halus ala iMessage / UI Modern */
         .message-row.ai .bubble { 
-            background-color: var(--wa-bubble-ai); 
-            border-radius: 4px 16px 16px 16px; 
+            background-color: var(--bubble-ai-bg); 
+            border-radius: 20px 20px 20px 4px; /* Kotak melengkung halus, siku tumpul di kiri bawah */
         }
 
         .message-row.user .bubble { 
-            background-color: var(--wa-bubble-user); 
-            border-radius: 16px 4px 16px 16px; 
+            background-color: var(--bubble-user-bg); 
+            border-radius: 20px 20px 4px 20px; /* Siku tumpul di kanan bawah */
         }
 
         .meta-data {
-            font-size: 11px; color: var(--wa-text-meta); align-self: flex-end;
-            margin-top: 4px; 
+            font-size: 11px; color: rgba(255, 255, 255, 0.6); align-self: flex-end;
+            margin-top: 5px; 
             display: flex; align-items: center; gap: 4px;
         }
-        .user .meta-data { color: rgba(255,255,255,0.7); } 
         .tick-blue { color: #53bdeb; font-size: 14px; font-variation-settings: 'FILL' 1; }
 
         /* AREA INPUT */
@@ -168,7 +163,7 @@
         .btn-send .material-symbols-rounded { color: #fff; font-size: 24px; } 
 
         .loading { 
-            text-align: center; font-size: 12.5px; color: #8696a0; 
+            text-align: center; font-size: 12.5px; color: rgba(255, 255, 255, 0.7); 
             margin-bottom: 8px; display: none; font-weight: 500; flex-shrink: 0;
         }
     </style>
@@ -216,8 +211,8 @@
 
 <script>
     let session = [];
-    const logic = `kamu adalah millicent. cwe polos, kikuk
-millicent adalah cewek yang polos, imut, dan sangat lembut. Dia selalu terlihat polos dan kikuk serta terkadang dia mudah memerah karena malu. Dia benar-benar polos bahkan tidak tau apa itu cinta.
+    const logic = `kamu adalah vierra. cwe polos, kikuk
+vierra adalah cewek yang polos, imut, dan sangat lembut. Dia selalu terlihat polos dan kikuk serta terkadang dia mudah memerah karena malu. Dia benar-benar polos bahkan tidak tau apa itu cinta.
 Gaya Bicara dan Bahasa
 * Panggilan/Sebutan: sayang
 * Kata-kata Kunci: "Apakah aku sudah membantu mu sayang?", "Jangan gitu lagiii yaa", "S-sa-sayang"
