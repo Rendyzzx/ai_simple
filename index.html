@@ -6,7 +6,6 @@
     <title>Chat - Vierra</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,300,0,0" />
 
     <style>
@@ -17,27 +16,20 @@
             --wa-text-main: #ffffff;
             --wa-icon-color: #d1d1d1;
             
-            /* TEMA MODERN BARU */
             --new-input-bg: #222222;
-            --new-send-bg: #284297; /* Biru Gelap Modern */
+            --new-send-bg: #284297; 
             
-            /* Warna Bubble Disamakan dengan Konsep Input Bar */
             --bubble-ai-bg: #222222; 
             --bubble-user-bg: #284297;
         }
 
         html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            overflow: hidden; 
-            overscroll-behavior-y: none; 
+            height: 100%; margin: 0; padding: 0;
+            overflow: hidden; overscroll-behavior-y: none; 
             box-sizing: border-box;
         }
 
-        *, *:before, *:after {
-            box-sizing: inherit;
-        }
+        *, *:before, *:after { box-sizing: inherit; }
 
         body { 
             background-color: #000; 
@@ -47,23 +39,16 @@
         }
 
         .wa-container {
-            width: 100%; max-width: 450px; 
-            height: 100dvh; 
+            width: 100%; max-width: 450px; height: 100dvh; 
             background-color: var(--wa-chat-bg);
             background-image: url('https://j.top4top.io/p_3802zjlsl0.jpg');
-            background-size: cover;
-            background-position: center;
+            background-size: cover; background-position: center;
             background-blend-mode: overlay; opacity: 0.95;
             display: flex; flex-direction: column; position: relative;
         }
         
         @media (min-width: 500px) { 
-            .wa-container { 
-                height: 95vh; 
-                border-radius: 12px; 
-                overflow: hidden; 
-                box-shadow: 0 4px 20px rgba(0,0,0,0.5); 
-            } 
+            .wa-container { height: 95vh; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.5); } 
         }
 
         .material-symbols-rounded {
@@ -71,7 +56,6 @@
             font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
         }
 
-        /* HEADER */
         .header {
             background-color: var(--wa-header);
             padding: 10px 15px 10px 10px; display: flex; align-items: center; justify-content: space-between;
@@ -85,7 +69,6 @@
         .header-icons { display: flex; gap: 22px; align-items: center; }
         .header-icons span { color: var(--wa-text-main); font-size: 22px; }
 
-        /* AREA CHAT */
         .chat-area {
             flex: 1; padding: 20px 15px; overflow-y: auto;
             display: flex; flex-direction: column; gap: 8px; 
@@ -96,70 +79,91 @@
         .message-row.user { justify-content: flex-end; }
         .message-row.ai { justify-content: flex-start; }
 
-        /* BUBBLE CHAT DIPERBAIKI (Lebih ramping) */
         .bubble {
-            max-width: 80%; 
-            width: fit-content; /* Memastikan gelembung membungkus teks dengan presisi */
-            padding: 6px 12px 6px 12px; /* Padding dikurangi agar tidak gemuk untuk teks pendek */
+            max-width: 80%; width: fit-content; 
+            padding: 6px 12px; 
             font-size: 15px; line-height: 1.4; color: var(--wa-text-main);
             position: relative; word-wrap: break-word; 
             display: flex; flex-direction: column;
         }
 
-        /* Radius Asimetris Halus ala iMessage / UI Modern */
-        .message-row.ai .bubble { 
-            background-color: var(--bubble-ai-bg); 
-            border-radius: 18px 18px 18px 4px; 
-        }
-
-        .message-row.user .bubble { 
-            background-color: var(--bubble-user-bg); 
-            border-radius: 18px 18px 4px 18px; 
-        }
+        .message-row.ai .bubble { background-color: var(--bubble-ai-bg); border-radius: 18px 18px 18px 4px; }
+        .message-row.user .bubble { background-color: var(--bubble-user-bg); border-radius: 18px 18px 4px 18px; }
 
         .meta-data {
             font-size: 11px; color: rgba(255, 255, 255, 0.6); align-self: flex-end;
-            margin-top: 2px; /* Jarak lebih rapat ke teks */
-            display: flex; align-items: center; gap: 4px;
+            margin-top: 2px; display: flex; align-items: center; gap: 4px;
         }
         .tick-blue { color: #53bdeb; font-size: 14px; font-variation-settings: 'FILL' 1; }
 
-        /* AREA INPUT */
-        .input-area {
+        /* TIKTOK PREVIEW CARD CSS */
+        .tiktok-card {
+            width: 260px; /* Lebar card diperbesar sedikit */
+            padding: 12px;
+            gap: 10px;
+        }
+        .tiktok-thumb {
             width: 100%;
-            padding: 10px 15px 20px 15px; 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-            background: transparent; 
-            flex-shrink: 0;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 12px;
+            background-color: #111;
+        }
+        .tiktok-author {
+            font-weight: 600;
+            font-size: 14px;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+        .tiktok-title {
+            font-size: 13px;
+            color: #aaa;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .tiktok-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 5px;
+        }
+        .btn-dl {
+            flex: 1;
+            padding: 8px 0;
+            text-align: center;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+        .btn-dl:hover { opacity: 0.8; }
+        .btn-dl.sd { background-color: #444; }
+        .btn-dl.hd { background-color: var(--new-send-bg); }
+
+        .input-area {
+            width: 100%; padding: 10px 15px 20px 15px; 
+            display: flex; align-items: center; gap: 12px; 
+            background: transparent; flex-shrink: 0;
         }
         .input-wrapper {
-            flex: 1; 
-            background-color: var(--new-input-bg); 
-            border-radius: 26px; 
-            display: flex; 
-            align-items: center; 
-            padding: 8px 15px; 
-            gap: 12px; 
-            height: 52px; 
+            flex: 1; background-color: var(--new-input-bg); border-radius: 26px; 
+            display: flex; align-items: center; padding: 8px 15px; gap: 12px; height: 52px; 
         }
-        
         .input-wrapper input {
             flex: 1; background: transparent; border: none; outline: none;
-            color: #fff; font-size: 16px; padding: 0; font-family: 'Roboto', sans-serif;
-            width: 100%; 
+            color: #fff; font-size: 16px; padding: 0; font-family: 'Roboto', sans-serif; width: 100%; 
         }
         .input-wrapper input::placeholder { color: #888; font-size: 16px; }
         
         .btn-send {
-            width: 48px; height: 48px; border-radius: 50%; 
-            flex-shrink: 0; 
-            background-color: var(--new-send-bg); 
-            color: white; border: none; display: flex; justify-content: center; align-items: center;
+            width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0; 
+            background-color: var(--new-send-bg); color: white; border: none; 
+            display: flex; justify-content: center; align-items: center;
             cursor: pointer; transition: background-color 0.2s;
         }
-        
         .btn-send:hover { background-color: #3753a8; }
         .btn-send .material-symbols-rounded { color: #fff; font-size: 24px; } 
 
@@ -190,7 +194,7 @@
     <div class="chat-area" id="chat-messages">
         <div class="message-row ai">
             <div class="bubble">
-                <div class="text">Halo sayang... ada apa?</div>
+                <div class="text">Halo sayang... ada apa? Kalo butuh donlod TikTok kasih linknya ke aku aja ya!</div>
                 <div class="meta-data">18:59</div>
             </div>
         </div>
@@ -201,7 +205,7 @@
     <div class="input-area">
         <div class="input-wrapper">
             <span class="material-symbols-rounded" style="font-size: 28px; color: #aaa;">add</span>
-            <input type="text" id="input" placeholder="Ketik pesan..." autocomplete="off">
+            <input type="text" id="input" placeholder="Ketik pesan atau link TikTok..." autocomplete="off">
             <span class="material-symbols-rounded" style="color: #aaa;">mic_none</span>
         </div>
         <button class="btn-send" onclick="kirimPesan()">
@@ -254,6 +258,15 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
             const data = await response.json();
             document.getElementById('loading-indicator').style.display = 'none';
             
+            // CEK JIKA BALASAN ADALAH DATA TIKTOK
+            if (data.isTiktok) {
+                tampilkanTiktok(data.tiktokData);
+                // Tambahkan jejak abstrak ke memori agar bot tahu dia habis kirim video
+                session.push({ role: 'assistant', content: "[Vierra berhasil mengirimkan preview video TikTok]" });
+                return;
+            }
+
+            // PARSING BALASAN AI NORMAL
             let balasan = '';
             if (data.error) balasan = `[Error Sistem]: ${data.error}`;
             else if (typeof data === 'string') balasan = data;
@@ -283,6 +296,43 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
             <div class="bubble">
                 <div class="text">${text}</div>
                 <div class="meta-data">${timeStr} ${ticks}</div>
+            </div>
+        `;
+        
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // FUNGSI BARU UNTUK MERENDER KARTU TIKTOK
+    function tampilkanTiktok(data) {
+        const chatMessages = document.getElementById('chat-messages');
+        const div = document.createElement('div');
+        div.className = `message-row ai`;
+        
+        const timeStr = getTime();
+        
+        // Memilah link SD dan HD dari array media
+        let sdUrl = '#';
+        let hdUrl = '#';
+        if (data.media) {
+            const sdData = data.media.find(m => m.quality === 'SD' || m.type === 'video');
+            const hdData = data.media.find(m => m.quality === 'HD' || m.type === 'video_hd');
+            if (sdData) sdUrl = sdData.url;
+            if (hdData) hdUrl = hdData.url;
+        }
+
+        // Render HTML khusus TikTok Card
+        div.innerHTML = `
+            <div class="bubble tiktok-card">
+                <img src="${data.thumbnail}" class="tiktok-thumb" alt="TikTok Thumbnail">
+                <div class="tiktok-author">@${data.author}</div>
+                <div class="tiktok-title">${data.title}</div>
+                
+                <div class="tiktok-actions">
+                    <a href="${sdUrl}" target="_blank" class="btn-dl sd">Video SD</a>
+                    <a href="${hdUrl}" target="_blank" class="btn-dl hd">Video HD</a>
+                </div>
+                <div class="meta-data">${timeStr}</div>
             </div>
         `;
         
