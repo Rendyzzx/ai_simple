@@ -67,7 +67,8 @@
         .contact-info { display: flex; flex-direction: column; margin-left: 5px; }
         .contact-name { font-size: 16px; font-weight: 500; color: var(--wa-text-main); }
         .header-icons { display: flex; gap: 22px; align-items: center; }
-        .header-icons span { color: var(--wa-text-main); font-size: 22px; }
+        .header-icons span { color: var(--wa-text-main); font-size: 22px; transition: color 0.2s; }
+        .header-icons span:hover { color: #ff6b6b; } /* Efek merah saat hover icon hapus */
 
         .chat-area {
             flex: 1; padding: 20px 15px; overflow-y: auto;
@@ -186,21 +187,15 @@
         </div>
         <div class="header-icons">
             <span class="material-symbols-rounded">videocam</span>
-            <span class="material-symbols-rounded">call</span>
+            <span class="material-symbols-rounded" onclick="hapusSesi()" title="Hapus Obrolan">delete</span>
             <span class="material-symbols-rounded">more_vert</span>
         </div>
     </div>
 
     <div class="chat-area" id="chat-messages">
-        <div class="message-row ai">
-            <div class="bubble">
-                <div class="text">Halo sayang... ada apa? Kalo butuh donlod TikTok kasih linknya ke aku aja ya!</div>
-                <div class="meta-data">18:59</div>
-            </div>
         </div>
-    </div>
     
-    <div class="loading" id="loading-indicator">mengetik...</div>
+    <div class="loading" id="loading-indicator">Vierra sedang mengetik...</div>
 
     <div class="input-area">
         <div class="input-wrapper">
@@ -229,6 +224,50 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
         return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
     }
 
+    // PESAN DEFAULT SAAT PERTAMA KALI DIBUKA / DIHAPUS
+    function getDefaultChatHTML() {
+        return `
+            <div class="message-row ai">
+                <div class="bubble">
+                    <div class="text">Halo sayang... ada apa? Kalo butuh donlod TikTok kasih linknya ke aku aja ya!</div>
+                    <div class="meta-data">${getTime()}</div>
+                </div>
+            </div>
+        `;
+    }
+
+    // SAAT WEB DIMUAT (LOAD LOCAL STORAGE)
+    window.onload = () => {
+        const savedSession = localStorage.getItem('vierra_session');
+        const savedHTML = localStorage.getItem('vierra_html');
+        
+        const chatMessages = document.getElementById('chat-messages');
+
+        if (savedSession && savedHTML) {
+            session = JSON.parse(savedSession);
+            chatMessages.innerHTML = savedHTML;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        } else {
+            chatMessages.innerHTML = getDefaultChatHTML();
+        }
+    };
+
+    // FUNGSI SIMPAN KE LOCAL STORAGE
+    function simpanSesi() {
+        localStorage.setItem('vierra_session', JSON.stringify(session));
+        localStorage.setItem('vierra_html', document.getElementById('chat-messages').innerHTML);
+    }
+
+    // FUNGSI HAPUS SESI (TOMBOL TONG SAMPAH)
+    function hapusSesi() {
+        if (confirm("S-sayang... kamu beneran mau hapus semua obrolan kita?")) {
+            localStorage.removeItem('vierra_session');
+            localStorage.removeItem('vierra_html');
+            session = [];
+            document.getElementById('chat-messages').innerHTML = getDefaultChatHTML();
+        }
+    }
+
     async function kirimPesan() {
         const input = document.getElementById('input');
         const text = input.value.trim();
@@ -236,8 +275,9 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
 
         tampilkanPesan(text, 'user');
         session.push({ role: 'user', content: text });
+        simpanSesi(); // Simpan saat user ngirim pesan
+
         input.value = '';
-        
         document.getElementById('loading-indicator').style.display = 'block';
         if (session.length > 10) session.splice(0, 2);
 
@@ -258,15 +298,15 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
             const data = await response.json();
             document.getElementById('loading-indicator').style.display = 'none';
             
-            // CEK JIKA BALASAN ADALAH DATA TIKTOK
+            // CEK TIKTOK DATA
             if (data.isTiktok) {
                 tampilkanTiktok(data.tiktokData);
-                // Tambahkan jejak ke memori agar AI ingat habis ngasih video
-                session.push({ role: 'assistant', content: "[Vierra berhasil mengirimkan preview video TikTok ke pengguna]" });
+                session.push({ role: 'assistant', content: "[Vierra berhasil mengirimkan preview video TikTok]" });
+                simpanSesi(); // Simpan saat AI ngirim TikTok
                 return;
             }
 
-            // PARSING BALASAN AI NORMAL
+            // NORMAL AI CHAT
             let balasan = '';
             if (data.error) balasan = `[Error Sistem]: ${data.error}`;
             else if (typeof data === 'string') balasan = data;
@@ -276,11 +316,13 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
 
             tampilkanPesan(balasan, 'ai');
             session.push({ role: 'assistant', content: balasan });
+            simpanSesi(); // Simpan saat AI balas teks
 
         } catch (e) {
             document.getElementById('loading-indicator').style.display = 'none';
             tampilkanPesan("S-sa-sayang... koneksiku ke server terputus.", 'ai');
             session.pop(); 
+            simpanSesi();
         }
     }
 
@@ -303,7 +345,7 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    // FUNGSI KHUSUS UNTUK MERENDER KARTU TIKTOK
+    // FUNGSI TIKTOK DENGAN REFERRER POLICY
     function tampilkanTiktok(data) {
         const chatMessages = document.getElementById('chat-messages');
         const div = document.createElement('div');
@@ -311,7 +353,6 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
         
         const timeStr = getTime();
         
-        // Memilih link SD dan HD
         let sdUrl = '#';
         let hdUrl = '#';
         if (data.media) {
@@ -321,9 +362,10 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
             if (hdData) hdUrl = hdData.url || hdData.backup;
         }
 
+        // referrerpolicy="no-referrer" ditambahkan di img agar gambar tidak diblokir TikTok
         div.innerHTML = `
             <div class="bubble tiktok-card">
-                <img src="${data.thumbnail}" class="tiktok-thumb" alt="TikTok Thumbnail">
+                <img src="${data.thumbnail}" class="tiktok-thumb" alt="TikTok Thumbnail" referrerpolicy="no-referrer" onerror="this.src='https://placehold.co/260x160/222222/FFFFFF?text=No+Thumbnail'">
                 <div class="tiktok-author">@${data.author}</div>
                 <div class="tiktok-title">${data.title}</div>
                 
