@@ -88,7 +88,6 @@
             display: flex; flex-direction: column;
         }
         
-        /* Agar format Enter (\n) terbaca di menu chat */
         .bubble .text { white-space: pre-wrap; } 
 
         .message-row.ai .bubble { background-color: var(--bubble-ai-bg); border-radius: 18px 18px 18px 4px; }
@@ -100,35 +99,17 @@
         }
         .tick-blue { color: #53bdeb; font-size: 14px; font-variation-settings: 'FILL' 1; }
 
-        /* TOMBOL MENU INLINE CSS */
         .menu-btn {
-            background-color: rgba(40, 66, 151, 0.15); 
-            color: #7b9cff; 
-            border: 1px solid #3753a8;
-            padding: 8px 12px;
-            border-radius: 8px;
-            margin-top: 10px;
-            margin-bottom: 2px;
-            font-size: 13.5px;
-            font-weight: 500;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.2s;
-            font-family: 'Roboto', sans-serif;
-            text-align: center;
+            background-color: rgba(40, 66, 151, 0.15); color: #7b9cff; border: 1px solid #3753a8;
+            padding: 8px 12px; border-radius: 8px; margin-top: 10px; margin-bottom: 2px;
+            font-size: 13.5px; font-weight: 500; cursor: pointer; width: 100%;
+            transition: all 0.2s; font-family: 'Roboto', sans-serif; text-align: center;
         }
         .menu-btn:hover { background-color: rgba(40, 66, 151, 0.35); }
 
-        /* TIKTOK PREVIEW CARD CSS */
-        .tiktok-card {
-            width: 260px;
-            padding: 12px;
-            gap: 10px;
-        }
-        .tiktok-thumb {
-            width: 100%; height: 160px; object-fit: cover;
-            border-radius: 12px; background-color: #111;
-        }
+        /* TIKTOK VIDEO CARD CSS */
+        .tiktok-card { width: 260px; padding: 12px; gap: 10px; }
+        .tiktok-thumb { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; background-color: #111; }
         .tiktok-author { font-weight: 600; font-size: 14px; color: #fff; margin-bottom: 2px; }
         .tiktok-title {
             font-size: 13px; color: #aaa;
@@ -143,18 +124,32 @@
         .btn-dl.sd { background-color: #444; }
         .btn-dl.hd { background-color: var(--new-send-bg); }
 
+        /* TIKTOK SLIDE GALLERY CSS */
+        .tiktok-slides {
+            display: flex; overflow-x: auto; gap: 8px;
+            padding-bottom: 5px; margin-top: 8px;
+        }
+        .tiktok-slides::-webkit-scrollbar { height: 4px; }
+        .tiktok-slides::-webkit-scrollbar-thumb { background: #555; border-radius: 4px; }
+        .slide-item { position: relative; flex: 0 0 130px; }
+        .slide-item img { 
+            width: 130px; height: 180px; object-fit: cover; 
+            border-radius: 8px; background-color: #111; display: block; 
+        }
+        .slide-num {
+            position: absolute; top: 6px; right: 6px; background: rgba(0,0,0,0.7);
+            color: #fff; font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 8px;
+        }
+        .tiktok-slide-hint { font-size: 11.5px; color: #7b9cff; margin-top: 5px; font-weight: 500; }
+
         .input-area {
-            width: 100%; padding: 10px 15px 20px 15px; 
-            display: flex; align-items: center; gap: 12px; 
-            background: transparent; flex-shrink: 0;
+            width: 100%; padding: 10px 15px 20px 15px; display: flex; align-items: center; gap: 12px; background: transparent; flex-shrink: 0;
         }
         .input-wrapper {
-            flex: 1; background-color: var(--new-input-bg); border-radius: 26px; 
-            display: flex; align-items: center; padding: 8px 15px; gap: 12px; height: 52px; 
+            flex: 1; background-color: var(--new-input-bg); border-radius: 26px; display: flex; align-items: center; padding: 8px 15px; gap: 12px; height: 52px; 
         }
         .input-wrapper input {
-            flex: 1; background: transparent; border: none; outline: none;
-            color: #fff; font-size: 16px; padding: 0; font-family: 'Roboto', sans-serif; width: 100%; 
+            flex: 1; background: transparent; border: none; outline: none; color: #fff; font-size: 16px; padding: 0; font-family: 'Roboto', sans-serif; width: 100%; 
         }
         .input-wrapper input::placeholder { color: #888; font-size: 16px; }
         
@@ -172,12 +167,9 @@
             margin-bottom: 8px; display: none; font-weight: 500; flex-shrink: 0;
         }
 
-        /* CUSTOM POP-UP (MODAL) CSS */
         .modal-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex; justify-content: center; align-items: center;
-            z-index: 1000; opacity: 0; visibility: hidden;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6);
+            display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; visibility: hidden;
             transition: opacity 0.3s ease, visibility 0.3s ease;
         }
         .modal-overlay.active { opacity: 1; visibility: visible; }
@@ -192,9 +184,7 @@
         .modal-text { font-size: 14.5px; color: #ccc; margin-bottom: 24px; line-height: 1.5; }
         .modal-actions { display: flex; gap: 12px; }
         .modal-btn {
-            flex: 1; padding: 12px 0; border: none; border-radius: 10px;
-            font-size: 14.5px; font-weight: 600; cursor: pointer; transition: 0.2s;
-            font-family: 'Roboto', sans-serif;
+            flex: 1; padding: 12px 0; border: none; border-radius: 10px; font-size: 14.5px; font-weight: 600; cursor: pointer; transition: 0.2s; font-family: 'Roboto', sans-serif;
         }
         .modal-btn.cancel { background-color: #333; color: #fff; }
         .modal-btn.cancel:hover { background-color: #444; }
@@ -220,9 +210,7 @@
         </div>
     </div>
 
-    <div class="chat-area" id="chat-messages">
-        </div>
-    
+    <div class="chat-area" id="chat-messages"></div>
     <div class="loading" id="loading-indicator">Vierra sedang mengetik...</div>
 
     <div class="input-area">
@@ -263,7 +251,6 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
         return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
     }
 
-    // PESAN PEMBUKA DENGAN TOMBOL MENU
     function getDefaultChatHTML() {
         return `
             <div class="message-row ai">
@@ -276,13 +263,9 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
         `;
     }
 
-    // FUNGSI UNTUK MENAMPILKAN MENU
     function tampilkanMenu() {
-        const textMenu = "🌸 *DAFTAR FITUR VIERRA* 🌸\n\n💬 *Teman Ngobrol*\nTinggal ketik aja, Vierra siap nemenin kamu ngobrol!\n\n🎵 *TikTok Downloader*\nKirim link video TikTok, nanti Vierra kasih tombol download SD & HD.\n\n✨ _Fitur lainnya sedang dikembangkan..._";
-        
+        const textMenu = "🌸 *DAFTAR FITUR VIERRA* 🌸\n\n💬 *Teman Ngobrol*\nTinggal ketik aja, Vierra siap nemenin kamu ngobrol!\n\n🎵 *TikTok Downloader*\nKirim link TikTok video/slide, Vierra akan bantu download.\n\n✨ _Fitur lainnya sedang dikembangkan..._";
         tampilkanPesan(textMenu, 'ai');
-        
-        // Simpan jejak agar AI tau kita habis ngasih menu
         session.push({ role: 'assistant', content: "[Vierra menampilkan daftar menu fitur ke pengguna]" });
         simpanSesi();
     }
@@ -290,7 +273,6 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
     window.onload = () => {
         const savedSession = localStorage.getItem('vierra_session');
         const savedHTML = localStorage.getItem('vierra_html');
-        
         const chatMessages = document.getElementById('chat-messages');
 
         if (savedSession && savedHTML) {
@@ -350,7 +332,7 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
             
             if (data.isTiktok) {
                 tampilkanTiktok(data.tiktokData);
-                session.push({ role: 'assistant', content: "[Vierra berhasil mengirimkan preview video TikTok]" });
+                session.push({ role: 'assistant', content: "[Vierra berhasil mengirimkan preview TikTok]" });
                 simpanSesi(); 
                 return;
             }
@@ -397,31 +379,58 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
         const chatMessages = document.getElementById('chat-messages');
         const div = document.createElement('div');
         div.className = `message-row ai`;
-        
         const timeStr = getTime();
-        
-        let sdUrl = '#';
-        let hdUrl = '#';
-        if (data.media) {
-            const sdData = data.media.find(m => m.quality === 'SD' || m.type === 'video');
-            const hdData = data.media.find(m => m.quality === 'HD' || m.type === 'video_hd');
-            if (sdData) sdUrl = sdData.url;
-            if (hdData) hdUrl = hdData.url || hdData.backup;
-        }
 
-        div.innerHTML = `
-            <div class="bubble tiktok-card">
-                <img src="${data.thumbnail}" class="tiktok-thumb" alt="TikTok Thumbnail" referrerpolicy="no-referrer" onerror="this.src='https://placehold.co/260x160/222222/FFFFFF?text=No+Thumbnail'">
-                <div class="tiktok-author">@${data.author}</div>
-                <div class="tiktok-title">${data.title}</div>
-                
-                <div class="tiktok-actions">
-                    <a href="${sdUrl}" target="_blank" class="btn-dl sd">Video SD</a>
-                    <a href="${hdUrl}" target="_blank" class="btn-dl hd">Video HD</a>
+        if (data.type === 'slide' || data.type === 'image') {
+            let slidesHtml = '';
+            if (data.media && data.media.length > 0) {
+                data.media.forEach((img, idx) => {
+                    slidesHtml += `
+                        <div class="slide-item">
+                            <a href="${img.url}" target="_blank">
+                                <img src="${img.thumbnail || img.url}" alt="Slide ${idx+1}" referrerpolicy="no-referrer" onerror="this.src='https://placehold.co/130x180/222222/FFFFFF?text=Error'">
+                            </a>
+                            <div class="slide-num">${idx+1}/${data.media.length}</div>
+                        </div>
+                    `;
+                });
+            }
+
+            div.innerHTML = `
+                <div class="bubble tiktok-card" style="width: 280px;">
+                    <div class="tiktok-author">@${data.author}</div>
+                    <div class="tiktok-title">${data.title}</div>
+                    <div class="tiktok-slide-hint">Geser untuk melihat foto & klik untuk HD ➔</div>
+                    <div class="tiktok-slides">
+                        ${slidesHtml}
+                    </div>
+                    <div class="meta-data">${timeStr}</div>
                 </div>
-                <div class="meta-data">${timeStr}</div>
-            </div>
-        `;
+            `;
+        } else {
+            let sdUrl = '#';
+            let hdUrl = '#';
+            if (data.media) {
+                const sdData = data.media.find(m => m.quality === 'SD' || m.type === 'video');
+                const hdData = data.media.find(m => m.quality === 'HD' || m.type === 'video_hd');
+                if (sdData) sdUrl = sdData.url;
+                if (hdData) hdUrl = hdData.url || hdData.backup;
+            }
+
+            div.innerHTML = `
+                <div class="bubble tiktok-card">
+                    <img src="${data.thumbnail}" class="tiktok-thumb" alt="TikTok Thumbnail" referrerpolicy="no-referrer" onerror="this.src='https://placehold.co/260x160/222222/FFFFFF?text=No+Thumbnail'">
+                    <div class="tiktok-author">@${data.author}</div>
+                    <div class="tiktok-title">${data.title}</div>
+                    
+                    <div class="tiktok-actions">
+                        <a href="${sdUrl}" target="_blank" class="btn-dl sd">Video SD</a>
+                        <a href="${hdUrl}" target="_blank" class="btn-dl hd">Video HD</a>
+                    </div>
+                    <div class="meta-data">${timeStr}</div>
+                </div>
+            `;
+        }
         
         chatMessages.appendChild(div);
         chatMessages.scrollTop = chatMessages.scrollHeight;
