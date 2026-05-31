@@ -8,7 +8,7 @@ export default async function handler(req, res) {
         const messages = body.messages || [];
         const lastMessage = messages[messages.length - 1]?.content || body.prompt || "";
 
-        // --- 1. FITUR VISION AI (MENGGUNAKAN ANTHROPIC CLAUDE VISION) ---
+        // --- 1. FITUR VISION AI (MENGGUNAKAN GOOGLE GEMINI - GRATIS) ---
         if (body.image) {
             try {
                 // Ekstrak base64 dan deteksi media type dari data URL
@@ -18,44 +18,37 @@ export default async function handler(req, res) {
 
                 let finalQuestion = lastMessage || "Jelaskan gambar ini secara singkat, padat, dan jelas. Gunakan emoji. Jawab seperti teman ngobrol biasa.";
 
-                // Kirim ke Anthropic Claude API dengan kemampuan Vision
-                const anthropicRes = await fetch("https://api.anthropic.com/v1/messages", {
+                const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+                const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+                const geminiRes = await fetch(geminiUrl, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-api-key': process.env.ANTHROPIC_API_KEY,
-                        'anthropic-version': '2023-06-01'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        model: "claude-haiku-4-5",
-                        max_tokens: 1024,
-                        system: "Kamu adalah Vierra. Cewek polos, imut, dan lembut. Panggil user dengan sebutan 'sayang'. Jawab singkat, padat. DILARANG KERAS menggunakan markdown seperti tanda bintang (**). Jawab dalam Bahasa Indonesia.",
-                        messages: [
+                        system_instruction: {
+                            parts: [{ text: "Kamu adalah Vierra. Cewek polos, imut, dan lembut. Panggil user dengan sebutan 'sayang'. Jawab singkat, padat, dalam Bahasa Indonesia. DILARANG KERAS menggunakan markdown seperti tanda bintang (**)." }]
+                        },
+                        contents: [
                             {
-                                role: "user",
-                                content: [
+                                parts: [
                                     {
-                                        type: "image",
-                                        source: {
-                                            type: "base64",
-                                            media_type: mediaType,
+                                        inline_data: {
+                                            mime_type: mediaType,
                                             data: base64Data
                                         }
                                     },
-                                    {
-                                        type: "text",
-                                        text: finalQuestion
-                                    }
+                                    { text: finalQuestion }
                                 ]
                             }
-                        ]
+                        ],
+                        generationConfig: { maxOutputTokens: 1024 }
                     })
                 });
 
-                const anthropicData = await anthropicRes.json();
+                const geminiData = await geminiRes.json();
 
-                if (anthropicData.content && anthropicData.content[0] && anthropicData.content[0].text) {
-                    let aiResponse = anthropicData.content[0].text;
+                if (geminiData.candidates && geminiData.candidates[0]?.content?.parts[0]?.text) {
+                    let aiResponse = geminiData.candidates[0].content.parts[0].text;
 
                     // Bersihkan markdown dari respon
                     aiResponse = aiResponse.replace(/\*\*([^*]+)\*\*/g, '$1')
@@ -66,8 +59,7 @@ export default async function handler(req, res) {
 
                     return res.status(200).json({ text: aiResponse });
                 } else {
-                    const errMsg = anthropicData.error?.message || 'Unknown error';
-                    console.error("Anthropic Vision Error:", anthropicData);
+                    console.error("Gemini Vision Error:", JSON.stringify(geminiData));
                     return res.status(200).json({ text: `S-sayang... Vierra gagal memproses gambarnya. Coba lagi ya! 🥺` });
                 }
             } catch (err) {
