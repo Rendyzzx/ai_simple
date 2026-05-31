@@ -8,59 +8,70 @@ export default async function handler(req, res) {
         const messages = body.messages || [];
         const lastMessage = messages[messages.length - 1]?.content || body.prompt || "";
 
-        // --- 1. FITUR VISION AI (MENGGUNAKAN LOGIKA COVENANT MILIKMU) ---
+        // --- 1. FITUR VISION AI (MENGGUNAKAN ANTHROPIC CLAUDE VISION) ---
         if (body.image) {
             try {
-                // Ekstrak base64 gambar ke bentuk Buffer
+                // Ekstrak base64 dan deteksi media type dari data URL
                 const base64Data = body.image.split(',')[1];
-                const buffer = Buffer.from(base64Data, 'base64');
-                
-                // Gunakan FormData native Vercel (Pengganti package form-data)
-                const formData = new FormData();
-                
-                let finalQuestion = lastMessage || "Jelaskan gambar ini secara singkat, padat, dan jelas. Gunakan emoji. Jawab seperti teman ngobrol biasa.";
-                
-                // Memasukkan field sama persis dengan kodemu
-                formData.append('question', finalQuestion);
-                formData.append('sessionId', `user_${Date.now()}`); 
-                formData.append('system', "Kamu adalah Vierra. Cewek polos, imut, dan lembut. Panggil user dengan sebutan 'sayang'. Jawab singkat, padat. DILARANG KERAS menggunakan markdown seperti tanda bintang (**). Dilarang menyebut Covenant atau Ritz.");
-                
-                // Ubah Buffer ke Blob agar Fetch mengenalinya sebagai file upload
-                const blob = new Blob([buffer], { type: 'image/jpeg' });
-                formData.append('file', blob, 'image.jpg');
+                const mediaTypeMatch = body.image.match(/^data:([^;]+);/);
+                const mediaType = (mediaTypeMatch && mediaTypeMatch[1]) || 'image/jpeg';
 
-                // Eksekusi API menggunakan Fetch (sebagai pengganti Axios)
-                const covRes = await fetch("https://api.covenant.sbs/api/ai/gemini", {
+                let finalQuestion = lastMessage || "Jelaskan gambar ini secara singkat, padat, dan jelas. Gunakan emoji. Jawab seperti teman ngobrol biasa.";
+
+                // Kirim ke Anthropic Claude API dengan kemampuan Vision
+                const anthropicRes = await fetch("https://api.anthropic.com/v1/messages", {
                     method: 'POST',
-                    headers: { 
-                        'x-api-key': 'cov_live_665b4c7dc6def02bf04862b4f0aabe2acd5b72dca69b4c2a',
-                        // Trik Jitu: Menyamar sebagai Axios agar lolos dari blokir server Covenant!
-                        'User-Agent': 'axios/1.6.8'
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': process.env.ANTHROPIC_API_KEY,
+                        'anthropic-version': '2023-06-01'
                     },
-                    // Catatan: Jangan set Content-Type manual, biarkan Fetch mengatur boundary form-data
-                    body: formData
+                    body: JSON.stringify({
+                        model: "claude-haiku-4-5",
+                        max_tokens: 1024,
+                        system: "Kamu adalah Vierra. Cewek polos, imut, dan lembut. Panggil user dengan sebutan 'sayang'. Jawab singkat, padat. DILARANG KERAS menggunakan markdown seperti tanda bintang (**). Jawab dalam Bahasa Indonesia.",
+                        messages: [
+                            {
+                                role: "user",
+                                content: [
+                                    {
+                                        type: "image",
+                                        source: {
+                                            type: "base64",
+                                            media_type: mediaType,
+                                            data: base64Data
+                                        }
+                                    },
+                                    {
+                                        type: "text",
+                                        text: finalQuestion
+                                    }
+                                ]
+                            }
+                        ]
+                    })
                 });
-                
-                const covData = await covRes.json();
-                
-                if (covData.status && covData.data && covData.data.result) {
-                    let aiResponse = covData.data.result;
-                    
-                    // Pembersihan respon persis seperti kode bot WA milikmu
+
+                const anthropicData = await anthropicRes.json();
+
+                if (anthropicData.content && anthropicData.content[0] && anthropicData.content[0].text) {
+                    let aiResponse = anthropicData.content[0].text;
+
+                    // Bersihkan markdown dari respon
                     aiResponse = aiResponse.replace(/\*\*([^*]+)\*\*/g, '$1')
                                            .replace(/\*([^*]+)\*/g, '$1')
                                            .replace(/#{1,6}\s?/g, '')
                                            .replace(/>\s?/g, '')
-                                           .replace(/`{1,3}[^`]*`{1,3}/g, '')
-                                           .replace(/Covenant/gi, '')
-                                           .replace(/Ritz/gi, 'sayang');
-                    
+                                           .replace(/`{1,3}[^`]*`{1,3}/g, '');
+
                     return res.status(200).json({ text: aiResponse });
                 } else {
-                    return res.status(200).json({ text: `S-sayang... Vierra gagal memproses gambarnya. Server Covenant bilang: ${covData.message || 'Error'} 🥺` });
+                    const errMsg = anthropicData.error?.message || 'Unknown error';
+                    console.error("Anthropic Vision Error:", anthropicData);
+                    return res.status(200).json({ text: `S-sayang... Vierra gagal memproses gambarnya. Coba lagi ya! 🥺` });
                 }
             } catch (err) {
-                console.error("Covenant Fetch Error:", err);
+                console.error("Vision Fetch Error:", err);
                 return res.status(200).json({ text: "M-maaf sayang... koneksi Vierra ke server API terputus. Coba lagi nanti ya! 😭" });
             }
         }
