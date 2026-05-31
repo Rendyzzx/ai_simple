@@ -18,7 +18,6 @@ export default async function handler(req, res) {
 
                 let finalQuestion = lastMessage || "Jelaskan gambar ini secara singkat, padat, dan jelas. Gunakan emoji. Jawab seperti teman ngobrol biasa.";
 
-                // PASTIKAN MENGGANTI INI DENGAN API KEY DARI CONSOLE.GROQ.COM
                 const GROQ_API_KEY = "ISI_API_KEY_GROQ_KAMU_DISINI";
                 const groqUrl = "https://api.groq.com/openai/v1/chat/completions";
 
