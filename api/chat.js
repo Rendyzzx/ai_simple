@@ -3,7 +3,7 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Method Not Allowed' });
     }
 
-    try {
+    try {   
         const body = req.body;
         const messages = body.messages || [];
         const lastMessage = messages[messages.length - 1]?.content || body.prompt || "";
@@ -18,7 +18,7 @@ export default async function handler(req, res) {
 
                 let finalQuestion = lastMessage || "Jelaskan gambar ini secara singkat, padat, dan jelas. Gunakan emoji. Jawab seperti teman ngobrol biasa.";
 
-                const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+                const GEMINI_API_KEY = "ISI_API_KEY_GEMINI_KAMU_DISINI";
                 const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
                 const geminiRes = await fetch(geminiUrl, {
