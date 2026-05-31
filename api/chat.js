@@ -8,7 +8,7 @@ export default async function handler(req, res) {
         const messages = body.messages || [];
         const lastMessage = messages[messages.length - 1]?.content || body.prompt || "";
 
-        // --- 1. FITUR VISION AI (MENGGUNAKAN GOOGLE GEMINI - GRATIS) ---
+        // --- 1. FITUR VISION AI (MENGGUNAKAN GROQ - LLAMA 3.2 VISION) ---
         if (body.image) {
             try {
                 // Ekstrak base64 dan deteksi media type dari data URL
@@ -18,37 +18,48 @@ export default async function handler(req, res) {
 
                 let finalQuestion = lastMessage || "Jelaskan gambar ini secara singkat, padat, dan jelas. Gunakan emoji. Jawab seperti teman ngobrol biasa.";
 
-                const GEMINI_API_KEY = "ISI_API_KEY_GEMINI_KAMU_DISINI";
-                const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+                // PASTIKAN MENGGANTI INI DENGAN API KEY DARI CONSOLE.GROQ.COM
+                const GROQ_API_KEY = "ISI_API_KEY_GROQ_KAMU_DISINI";
+                const groqUrl = "https://api.groq.com/openai/v1/chat/completions";
 
-                const geminiRes = await fetch(geminiUrl, {
+                const groqRes = await fetch(groqUrl, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Authorization': `Bearer ${GROQ_API_KEY}`,
+                        'Content-Type': 'application/json' 
+                    },
                     body: JSON.stringify({
-                        system_instruction: {
-                            parts: [{ text: "Kamu adalah Vierra. Cewek polos, imut, dan lembut. Panggil user dengan sebutan 'sayang'. Jawab singkat, padat, dalam Bahasa Indonesia. DILARANG KERAS menggunakan markdown seperti tanda bintang (**)." }]
-                        },
-                        contents: [
+                        model: "llama-3.2-11b-vision-preview", // Model vision dari Meta
+                        messages: [
                             {
-                                parts: [
-                                    {
-                                        inline_data: {
-                                            mime_type: mediaType,
-                                            data: base64Data
-                                        }
+                                role: "system",
+                                content: "Kamu adalah Vierra. Cewek polos, imut, dan lembut. Panggil user dengan sebutan 'sayang'. Jawab singkat, padat, dalam Bahasa Indonesia. DILARANG KERAS menggunakan markdown seperti tanda bintang (**)."
+                            },
+                            {
+                                role: "user",
+                                content: [
+                                    { 
+                                        type: "text", 
+                                        text: finalQuestion 
                                     },
-                                    { text: finalQuestion }
+                                    {
+                                        type: "image_url",
+                                        image_url: {
+                                            url: `data:${mediaType};base64,${base64Data}`
+                                        }
+                                    }
                                 ]
                             }
                         ],
-                        generationConfig: { maxOutputTokens: 1024 }
+                        max_tokens: 1024,
+                        temperature: 0.7 
                     })
                 });
 
-                const geminiData = await geminiRes.json();
+                const groqData = await groqRes.json();
 
-                if (geminiData.candidates && geminiData.candidates[0]?.content?.parts[0]?.text) {
-                    let aiResponse = geminiData.candidates[0].content.parts[0].text;
+                if (groqData.choices && groqData.choices[0]?.message?.content) {
+                    let aiResponse = groqData.choices[0].message.content;
 
                     // Bersihkan markdown dari respon
                     aiResponse = aiResponse.replace(/\*\*([^*]+)\*\*/g, '$1')
@@ -59,16 +70,16 @@ export default async function handler(req, res) {
 
                     return res.status(200).json({ text: aiResponse });
                 } else {
-                    console.error("Gemini Vision Error:", JSON.stringify(geminiData));
-                    return res.status(200).json({ text: `S-sayang... Vierra gagal memproses gambarnya. Coba lagi ya! 🥺` });
+                    console.error("Groq Vision Error:", JSON.stringify(groqData));
+                    return res.status(200).json({ text: `S-sayang... Vierra pusing liat gambarnya. Coba kirim lagi ya! 🥺` });
                 }
             } catch (err) {
                 console.error("Vision Fetch Error:", err);
-                return res.status(200).json({ text: "M-maaf sayang... koneksi Vierra ke server API terputus. Coba lagi nanti ya! 😭" });
+                return res.status(200).json({ text: "M-maaf sayang... koneksi Vierra ke server terputus. 😭" });
             }
         }
 
-        // --- 2. DOWNLOADER PLATFORM (SAMA SEPERTI SEBELUMNYA) ---
+        // --- 2. DOWNLOADER PLATFORM ---
         const rxTiktok = /(?:https?:\/\/)?(?:www\.)?(?:tiktok\.com|vt\.tiktok\.com|vm\.tiktok\.com)\/[^\s]+/i;
         const rxIg = /(?:https?:\/\/)?(?:www\.)?instagram\.com\/(?:p|reel|tv)\/[^\s]+/i;
         const rxCapcut = /(?:https?:\/\/)?(?:www\.)?capcut\.com\/t[a-zA-Z0-9\/_-]+/i;
