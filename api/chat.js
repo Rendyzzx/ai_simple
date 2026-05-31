@@ -3,7 +3,7 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Method Not Allowed' });
     }
 
-    try {   
+    try {
         const body = req.body;
         const messages = body.messages || [];
         const lastMessage = messages[messages.length - 1]?.content || body.prompt || "";
