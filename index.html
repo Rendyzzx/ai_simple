@@ -109,6 +109,7 @@
             transition: all 0.2s; font-family: 'Roboto', sans-serif; text-align: center;
         }
 
+        /* CARD DOWNLOADER */
         .dl-card { width: 260px; padding: 12px; gap: 10px; pointer-events: none; }
         .dl-badge { background-color: #d14747; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; position: absolute; top: 18px; left: 18px; z-index: 2; }
         .dl-thumb { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; background-color: #111; pointer-events: none;}
@@ -125,6 +126,7 @@
         .slide-item img { width: 130px; height: 180px; object-fit: cover; border-radius: 8px; background-color: #111; display: block; }
         .slide-num { position: absolute; top: 6px; right: 6px; background: rgba(0,0,0,0.7); color: #fff; font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 8px; pointer-events: none; }
 
+        /* INPUT AREA */
         .input-area { width: 100%; padding: 10px 15px 20px 15px; display: flex; align-items: center; gap: 12px; background: transparent; flex-shrink: 0; }
         .input-wrapper { flex: 1; background-color: var(--new-input-bg); border-radius: 26px; display: flex; align-items: center; padding: 8px 15px; gap: 12px; height: 52px; }
         .input-wrapper input { flex: 1; background: transparent; border: none; outline: none; color: #fff; font-size: 16px; padding: 0; font-family: 'Roboto', sans-serif; width: 100%; }
@@ -140,8 +142,10 @@
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
         .shake { animation: shake 0.3s ease-in-out; }
 
-        .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; visibility: hidden; transition: 0.3s; }
-        .modal-overlay.active { opacity: 1; visibility: visible; }
+        /* MODALS */
+        .modal-overlay, .img-editor-overlay, .context-menu-overlay, .persona-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; visibility: hidden; transition: 0.3s; }
+        .modal-overlay.active, .img-editor-overlay.active, .context-menu-overlay.active, .persona-overlay.active { opacity: 1; visibility: visible; }
+        
         .modal-box { background-color: var(--new-input-bg); width: 85%; max-width: 320px; border-radius: 16px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transform: translateY(20px) scale(0.95); transition: 0.3s; color: var(--wa-text-main); text-align: center; }
         .modal-overlay.active .modal-box { transform: translateY(0) scale(1); }
         .modal-title { font-size: 18px; font-weight: 600; margin-bottom: 12px; color: #ff6b6b; }
@@ -151,29 +155,23 @@
         .modal-btn.cancel { background-color: #333; color: #fff; }
         .modal-btn.confirm { background-color: #d14747; color: #fff; }
 
-        .context-menu-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 2000; opacity: 0; visibility: hidden; transition: 0.3s; display: flex; align-items: flex-end; }
-        .context-menu-overlay.active { opacity: 1; visibility: visible; }
-        .context-menu { background: var(--new-input-bg); width: 100%; border-top-left-radius: 24px; border-top-right-radius: 24px; padding: 24px 20px 35px 20px; transform: translateY(100%); transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1); display: flex; flex-direction: column; gap: 12px; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
-        .context-menu-overlay.active .context-menu { transform: translateY(0); }
+        .context-menu, .persona-panel { background: var(--new-input-bg); width: 100%; border-top-left-radius: 24px; border-top-right-radius: 24px; padding: 24px 20px 35px 20px; transform: translateY(100%); transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1); display: flex; flex-direction: column; gap: 12px; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); align-self: flex-end; }
+        .context-menu-overlay.active .context-menu, .persona-overlay.active .persona-panel { transform: translateY(0); }
         .context-btn { background: #2a2a2a; color: white; border: none; padding: 16px; border-radius: 14px; font-size: 15px; font-weight: 500; display: flex; align-items: center; gap: 12px; cursor: pointer; font-family: 'Roboto', sans-serif; }
         .context-btn.danger { color: #ff6b6b; }
-        
+
         .toast { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: var(--new-send-bg); color: #fff; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 500; opacity: 0; visibility: hidden; transition: 0.3s; z-index: 3000; }
         .toast.show { opacity: 1; visibility: visible; top: 85px; }
 
         /* MORE MENU (titik tiga) */
-        .more-menu-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2500; display: none; }
+        .more-menu-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2500; display: none; background: transparent; }
         .more-menu-overlay.active { display: block; }
         .more-menu { position: absolute; top: 56px; right: 12px; background: #1e2535; border-radius: 14px; min-width: 210px; padding: 8px 0; box-shadow: 0 8px 24px rgba(0,0,0,0.5); overflow: hidden; }
         .more-menu-item { display: flex; align-items: center; gap: 12px; padding: 14px 18px; font-size: 15px; color: #fff; cursor: pointer; transition: background 0.15s; }
         .more-menu-item:hover, .more-menu-item:active { background: rgba(255,255,255,0.07); }
         .more-menu-item .material-symbols-rounded { font-size: 21px; color: #aaa; }
 
-        /* PERSONALISASI PANEL */
-        .persona-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.55); z-index: 3000; opacity: 0; visibility: hidden; transition: 0.3s; display: flex; align-items: flex-end; }
-        .persona-overlay.active { opacity: 1; visibility: visible; }
-        .persona-panel { background: var(--new-input-bg); width: 100%; border-top-left-radius: 24px; border-top-right-radius: 24px; padding: 24px 20px 40px; transform: translateY(100%); transition: 0.3s cubic-bezier(0.25,1,0.5,1); }
-        .persona-overlay.active .persona-panel { transform: translateY(0); }
+        /* PERSONALISASI */
         .persona-title { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 20px; }
         .persona-avatar-row { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
         .persona-avatar-preview { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--new-send-bg); flex-shrink: 0; }
@@ -185,8 +183,7 @@
         .persona-save-btn { width: 100%; padding: 14px; background: var(--new-send-bg); color: #fff; border: none; border-radius: 14px; font-size: 16px; font-weight: 600; cursor: pointer; font-family: 'Roboto', sans-serif; }
 
         /* IMAGE EDITOR MODAL */
-        .img-editor-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 4000; opacity: 0; visibility: hidden; transition: 0.3s; display: flex; flex-direction: column; }
-        .img-editor-overlay.active { opacity: 1; visibility: visible; }
+        .img-editor-overlay { background: rgba(0,0,0,0.85); flex-direction: column; align-items: stretch; justify-content: flex-start;}
         .img-editor-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; flex-shrink: 0; }
         .img-editor-header span { font-size: 17px; font-weight: 600; color: #fff; }
         .img-editor-close { background: none; border: none; color: #aaa; cursor: pointer; padding: 4px; display: flex; align-items: center; }
@@ -196,7 +193,22 @@
         .img-caption-input { width: 100%; background: rgba(255,255,255,0.1); border: none; border-radius: 12px; padding: 12px 16px; color: #fff; font-size: 15px; font-family: 'Roboto', sans-serif; outline: none; box-sizing: border-box; margin-bottom: 14px; }
         .img-caption-input::placeholder { color: rgba(255,255,255,0.4); }
         .img-send-btn { width: 100%; padding: 14px; background: var(--new-send-bg); color: #fff; border: none; border-radius: 14px; font-size: 16px; font-weight: 600; cursor: pointer; font-family: 'Roboto', sans-serif; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .img-send-btn .material-symbols-rounded { font-size: 20px; }
+
+        /* --- VOICE NOTE STYLES --- */
+        .voice-bubble { display: flex; align-items: center; gap: 12px; padding: 6px 12px 6px 6px !important; min-width: 240px; }
+        .voice-avatar-wrap { position: relative; width: 42px; height: 42px; flex-shrink: 0; }
+        .voice-avatar-wrap img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        .voice-avatar-wrap .mic-icon { position: absolute; bottom: -2px; right: -4px; color: #53bdeb; font-size: 16px; background: var(--bubble-user-bg); border-radius: 50%; }
+        .voice-play-btn { width: 36px; height: 36px; border-radius: 50%; background: rgba(0,0,0,0.2); display: flex; justify-content: center; align-items: center; border: none; cursor: pointer; flex-shrink: 0; transition: 0.2s; }
+        .voice-play-btn .material-symbols-rounded { color: #fff; font-size: 24px; margin-left: 2px; }
+        .voice-waveform { flex: 1; display: flex; align-items: center; gap: 3px; height: 30px; }
+        .voice-bar { flex: 1; min-width: 3px; background-color: rgba(255,255,255,0.4); border-radius: 4px; height: 15%; transition: height 0.1s ease; }
+        @keyframes sound-wave { 0% { height: 15%; } 100% { height: 90%; } }
+        .voice-bar.playing { animation: sound-wave 0.4s infinite alternate; }
+        .voice-bar.playing:nth-child(odd) { animation-delay: 0.1s; }
+        .voice-bar.playing:nth-child(3n) { animation-delay: 0.2s; }
+        .voice-bar.playing:nth-child(4n) { animation-delay: 0.3s; }
+        .voice-duration { font-size: 12px; color: rgba(255, 255, 255, 0.8); min-width: 35px; text-align: right; font-weight: 500; }
     </style>
 </head>
 <body>
@@ -226,7 +238,7 @@
         <div class="input-wrapper">
             <span class="material-symbols-rounded btn-attach" id="btn-attach" title="Kirim Gambar">add_photo_alternate</span>
             <input type="text" id="input" placeholder="Ketik pesan atau link..." autocomplete="off">
-            <span class="material-symbols-rounded" id="btn-mic" style="color: #aaa; cursor: pointer; transition: 0.2s;" title="Bicara">mic_none</span>
+            <span class="material-symbols-rounded" id="btn-mic" style="color: #aaa; cursor: pointer; transition: 0.2s;" title="Tahan untuk Bicara">mic_none</span>
         </div>
         <button class="btn-send" id="btn-send-msg">
             <span class="material-symbols-rounded">arrow_upward</span> 
@@ -378,6 +390,7 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
+    // Fungsi Render Card Downloader
     function renderDownloaderCard(platform, data) {
         const chatMessages = document.getElementById('chat-messages');
         const div = document.createElement('div');
@@ -430,7 +443,6 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
             document.getElementById('btn-attach').classList.remove('active');
             window.pendingImageBase64 = null;
             
-            // Daftar link gambar PAP Vierra
             const listPap = [
                 "https://placehold.co/400x500/ffb6c1/ffffff?text=Lagi+Malu",
                 "https://placehold.co/400x500/87cefa/ffffff?text=Selfie+Dulu",
@@ -438,15 +450,19 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
             ];
             const randomPap = listPap[Math.floor(Math.random() * listPap.length)];
             
-            tampilkanPesan(text, 'user'); // Tampilkan pesan user dulu
+            tampilkanPesan(text, 'user');
             
-            // Tunda balasan supaya terlihat natural
+            const loadingInd = document.getElementById('loading-indicator');
+            loadingInd.style.display = 'block';
+            loadingInd.innerText = "Vierra sedang mencari foto terbaik... 📸";
+            
             setTimeout(() => {
+                loadingInd.style.display = 'none';
                 const balasanLucu = "I-ini fotoku sayang... Jangan diliatin terus, Vierra jadi malu... 🫣";
                 tampilkanPesan(balasanLucu, 'ai', randomPap);
                 window.chatHistory.push({ role: 'assistant', content: balasanLucu });
                 window.simpanSesi();
-            }, 1000); 
+            }, 1500); 
             
             return; 
         }
@@ -512,38 +528,100 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
         }
     }
 
-    window.tutupContextMenu = function() {
-        document.getElementById('context-menu').classList.remove('active');
-        activeBubbleNode = null;
-    };
+    // Fungsi Render Voice Note
+    function kirimPesanSuara(audioUrl, duration) {
+        const chatMessages = document.getElementById('chat-messages');
+        const div = document.createElement('div');
+        div.className = `message-row user`;
+        
+        let barsHtml = '';
+        for(let i=0; i<15; i++) { barsHtml += `<div class="voice-bar"></div>`; }
 
-    window.salinTeksPesan = function() {
-        if (!activeBubbleNode) return;
-        const textNode = activeBubbleNode.querySelector('.text') || activeBubbleNode.querySelector('.dl-title');
-        if (textNode) {
-            navigator.clipboard.writeText(textNode.innerText).then(() => {
-                window.tutupContextMenu();
-                window.showToast("Teks disalin!");
-            }).catch(() => { window.tutupContextMenu(); });
-        } else window.tutupContextMenu();
-    };
+        div.innerHTML = `
+            <div class="bubble voice-bubble">
+                <div class="voice-avatar-wrap">
+                    <img src="https://placehold.co/100x100/284297/fff?text=Me" alt="User">
+                    <span class="material-symbols-rounded mic-icon">mic</span>
+                </div>
+                <button class="voice-play-btn">
+                    <span class="material-symbols-rounded icon-play">play_arrow</span>
+                </button>
+                <div class="voice-waveform">${barsHtml}</div>
+                <div class="voice-duration">${duration}</div>
+                <div class="voice-meta">
+                    ${window.getTimeStr()} <span class="material-symbols-rounded tick-blue" style="font-size:14px;">done_all</span>
+                </div>
+            </div>
+        `;
+        
+        const audioObj = new Audio(audioUrl);
+        const btnPlay = div.querySelector('.voice-play-btn');
+        const iconPlay = div.querySelector('.icon-play');
+        const bars = div.querySelectorAll('.voice-bar');
+        
+        btnPlay.addEventListener('click', () => {
+            if (audioObj.paused) {
+                audioObj.play();
+                iconPlay.innerText = 'pause';
+                bars.forEach(b => b.classList.add('playing'));
+            } else {
+                audioObj.pause();
+                iconPlay.innerText = 'play_arrow';
+                bars.forEach(b => b.classList.remove('playing'));
+            }
+        });
 
-    window.hapusPesanSatu = function() {
-        if (!activeBubbleNode) return;
-        const textNode = activeBubbleNode.querySelector('.text') || activeBubbleNode.querySelector('.dl-title');
-        if (textNode) {
-            const textToDel = textNode.innerText;
-            const index = window.chatHistory.findIndex(msg => msg.content && msg.content.includes(textToDel));
-            if (index !== -1) window.chatHistory.splice(index, 1);
-        }
-        activeBubbleNode.remove();
+        audioObj.addEventListener('ended', () => {
+            iconPlay.innerText = 'play_arrow';
+            bars.forEach(b => b.classList.remove('playing'));
+        });
+
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        window.chatHistory.push({ role: 'user', content: "[User mengirim pesan suara/voice note]" });
         window.simpanSesi();
-        window.tutupContextMenu();
-        window.showToast("Pesan dihapus!");
-    };
+        
+        const loadingInd = document.getElementById('loading-indicator');
+        loadingInd.style.display = 'block';
+        loadingInd.innerText = "Vierra sedang mendengarkan suaramu... 🎧";
+        triggerAIAfterVoice();
+    }
+
+    async function triggerAIAfterVoice() {
+        const dynamicBotLogic = window._customPanggilan 
+            ? botLogic.replace(/sayang/g, window._customPanggilan)
+            : botLogic;
+        
+        let payloadMessages = [ { role: 'system', content: dynamicBotLogic }, ...window.chatHistory ];
+
+        try {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: { id: 'gpt-4' },
+                    messages: payloadMessages,
+                    prompt: "*mengirim pesan suara*" // Perintah bayangan ke AI
+                })
+            });
+
+            const data = await response.json();
+            document.getElementById('loading-indicator').style.display = 'none';
+            
+            let balasan = data.text || "Suara kamu bagus banget sayang... Vierra jadi deg-degan dengernya 🫣";
+            tampilkanPesan(balasan, 'ai');
+            window.chatHistory.push({ role: 'assistant', content: balasan });
+            window.simpanSesi(); 
+        } catch (e) {
+            document.getElementById('loading-indicator').style.display = 'none';
+            tampilkanPesan("M-maaf sayang... suaranya putus-putus, koneksinya jelek. 😭", 'ai');
+        }
+    }
+
 
     document.addEventListener('DOMContentLoaded', () => {
-        // SISTEM AUTO-COMPRESS GAMBAR (MENCEGAH ERROR PAYLOAD TOO LARGE)
+        // IMAGE AUTO COMPRESS
         document.getElementById('btn-attach').addEventListener('click', () => {
             document.getElementById('image-input').click();
         });
@@ -557,8 +635,7 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 800;
-                    const MAX_HEIGHT = 800;
+                    const MAX_WIDTH = 800; const MAX_HEIGHT = 800;
                     let width = img.width; let height = img.height;
                     if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } }
                     else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
@@ -566,7 +643,6 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
                     window._tempImageBase64 = canvas.toDataURL('image/jpeg', 0.6);
-                    // Tampilkan image editor
                     document.getElementById('img-editor-preview-img').src = window._tempImageBase64;
                     document.getElementById('img-caption-input').value = '';
                     document.getElementById('img-editor-overlay').classList.add('active');
@@ -574,17 +650,14 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
                 img.src = event.target.result;
             };
             reader.readAsDataURL(file);
-            // Reset input supaya bisa pilih gambar yang sama lagi
             this.value = '';
         });
 
-        // Tutup image editor
         window.tutupImgEditor = function() {
             document.getElementById('img-editor-overlay').classList.remove('active');
             window._tempImageBase64 = null;
         };
 
-        // Kirim gambar dari editor
         window.kirimGambarDariEditor = function() {
             if (!window._tempImageBase64) return;
             const caption = document.getElementById('img-caption-input').value.trim();
@@ -596,54 +669,82 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
             window.showToast('Gambar siap dikirim! 🖼️');
         };
 
-        // --- FITUR VOICE INPUT ---
+        // --- FITUR PESAN SUARA (VOICE NOTE) ---
         const btnMic = document.getElementById('btn-mic');
         const inputField = document.getElementById('input');
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
+        let recordTimer;
+        let recordSeconds = 0;
 
-        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            const recognition = new SpeechRecognition();
-            recognition.lang = 'id-ID'; 
-            recognition.interimResults = false;
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(stream => {
+                mediaRecorder = new MediaRecorder(stream);
 
-            recognition.onstart = function() {
-                btnMic.style.color = '#ff6b6b'; 
-                inputField.placeholder = "Mendengarkan suaramu...";
-            };
+                mediaRecorder.ondataavailable = e => { audioChunks.push(e.data); };
 
-            recognition.onresult = function(event) {
-                const transcript = event.results[0][0].transcript;
-                inputField.value += (inputField.value ? ' ' : '') + transcript;
-            };
-
-            recognition.onerror = function(event) {
-                window.showToast("Gagal mendengar: " + event.error);
-            };
-
-            recognition.onend = function() {
-                btnMic.style.color = '#aaa'; 
-                inputField.placeholder = "Ketik pesan atau link...";
-            };
-
-            btnMic.addEventListener('click', () => {
-                recognition.start();
-            });
-        } else {
-            btnMic.addEventListener('click', () => {
-                window.showToast("Browser tidak mendukung fitur suara.");
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    audioChunks = [];
+                    
+                    const mins = Math.floor(recordSeconds / 60);
+                    const secs = recordSeconds % 60;
+                    const durationStr = `${mins}:${secs.toString().padStart(2, '0')}`;
+                    
+                    kirimPesanSuara(audioUrl, durationStr);
+                };
+            })
+            .catch(err => {
+                console.error("Mic error:", err);
+                btnMic.style.display = 'none'; 
             });
         }
 
-        // MORE VERT BUTTON
+        function updateRecordUI() {
+            const mins = Math.floor(recordSeconds / 60);
+            const secs = recordSeconds % 60;
+            inputField.placeholder = `🔴 Merekam... ${mins}:${secs.toString().padStart(2, '0')} (Klik mic untuk kirim)`;
+        }
+
+        btnMic.addEventListener('click', () => {
+            if (!mediaRecorder) {
+                window.showToast("Microphone tidak diizinkan atau tidak tersedia.");
+                return;
+            }
+
+            if (!isRecording) {
+                mediaRecorder.start();
+                isRecording = true;
+                btnMic.style.color = '#ff6b6b';
+                btnMic.innerText = 'stop_circle';
+                
+                recordSeconds = 0;
+                updateRecordUI();
+                recordTimer = setInterval(() => {
+                    recordSeconds++;
+                    updateRecordUI();
+                }, 1000);
+            } else {
+                mediaRecorder.stop();
+                isRecording = false;
+                btnMic.style.color = '#aaa';
+                btnMic.innerText = 'mic_none';
+                
+                clearInterval(recordTimer);
+                inputField.placeholder = "Ketik pesan atau link...";
+            }
+        });
+
+        // MORE VERT & PERSONALISASI
         document.getElementById('btn-more-vert').addEventListener('click', function(e) {
             e.stopPropagation();
             document.getElementById('more-menu-overlay').classList.toggle('active');
         });
-        window.tutupMoreMenu = function() {
-            document.getElementById('more-menu-overlay').classList.remove('active');
-        };
+        window.tutupMoreMenu = function() { document.getElementById('more-menu-overlay').classList.remove('active'); };
 
-        // PERSONALISASI
         window.bukaPersonalisasi = function() {
             window.tutupMoreMenu();
             const p = window._persona;
@@ -651,20 +752,16 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
             document.getElementById('persona-panggilan').value = p.panggilan || '';
             document.getElementById('persona-avatar-url').value = p.avatar || '';
             document.getElementById('persona-avatar-preview').src = p.avatar || 'https://b.top4top.io/p_3802tsmbt0.jpg';
-            // set selected color
             document.querySelectorAll('.persona-color-btn').forEach(btn => {
                 btn.classList.toggle('selected', btn.dataset.color === p.warna);
             });
             document.getElementById('persona-overlay').classList.add('active');
         };
-        window.tutupPersonalisasi = function() {
-            document.getElementById('persona-overlay').classList.remove('active');
-        };
-        // Live preview avatar URL
+        window.tutupPersonalisasi = function() { document.getElementById('persona-overlay').classList.remove('active'); };
+        
         document.getElementById('persona-avatar-url').addEventListener('input', function() {
             if (this.value) document.getElementById('persona-avatar-preview').src = this.value;
         });
-        // Color picker
         document.getElementById('persona-color-row').addEventListener('click', function(e) {
             const btn = e.target.closest('.persona-color-btn');
             if (!btn) return;
@@ -685,25 +782,20 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
         };
         window.terapkanPersona = function() {
             const p = window._persona;
-            // Nama di header
             document.querySelector('.contact-name').textContent = p.nama || 'Vierra';
-            // Avatar di header
             if (p.avatar) document.querySelector('.profile-pic').src = p.avatar;
-            // Warna tema (CSS variable)
             if (p.warna) {
                 document.documentElement.style.setProperty('--new-send-bg', p.warna);
                 document.documentElement.style.setProperty('--bubble-user-bg', p.warna);
             }
-            // Patch botLogic dengan panggilan custom
-            if (p.panggilan) {
-                window._customPanggilan = p.panggilan;
-            }
+            if (p.panggilan) window._customPanggilan = p.panggilan;
         };
-        // Load persona dari localStorage
+        
         const savedPersona = localStorage.getItem('vierra_persona');
         window._persona = savedPersona ? JSON.parse(savedPersona) : { nama: 'Vierra', panggilan: 'sayang', avatar: '', warna: '#2842AD' };
         window.terapkanPersona();
 
+        // CHAT AREA EVENTS
         const chatContainer = document.getElementById('chat-messages');
         chatContainer.addEventListener('contextmenu', e => {
             const bubble = e.target.closest('.bubble');
