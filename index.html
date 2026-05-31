@@ -218,7 +218,7 @@
     </div>
 
     <div class="chat-area" id="chat-messages"></div>
-    <div class="loading" id="loading-indicator">Vierra sedang melihat...</div>
+    <div class="loading" id="loading-indicator">Vierra sedang mengetik... ✍️</div>
 
     <input type="file" id="image-input" accept="image/*" style="display:none">
 
@@ -226,7 +226,7 @@
         <div class="input-wrapper">
             <span class="material-symbols-rounded btn-attach" id="btn-attach" title="Kirim Gambar">add_photo_alternate</span>
             <input type="text" id="input" placeholder="Ketik pesan atau link..." autocomplete="off">
-            <span class="material-symbols-rounded" style="color: #aaa;">mic_none</span>
+            <span class="material-symbols-rounded" id="btn-mic" style="color: #aaa; cursor: pointer; transition: 0.2s;" title="Bicara">mic_none</span>
         </div>
         <button class="btn-send" id="btn-send-msg">
             <span class="material-symbols-rounded">arrow_upward</span> 
@@ -255,8 +255,6 @@
         </div>
     </div>
     
-
-    <!-- MORE MENU OVERLAY -->
     <div class="more-menu-overlay" id="more-menu-overlay" onclick="window.tutupMoreMenu()">
         <div class="more-menu" onclick="event.stopPropagation()">
             <div class="more-menu-item" onclick="window.bukaPersonalisasi()">
@@ -268,7 +266,6 @@
         </div>
     </div>
 
-    <!-- PERSONALISASI PANEL -->
     <div class="persona-overlay" id="persona-overlay" onclick="window.tutupPersonalisasi()">
         <div class="persona-panel" onclick="event.stopPropagation()">
             <div class="persona-title">✨ Personalisasi Vierra</div>
@@ -296,7 +293,6 @@
         </div>
     </div>
 
-    <!-- IMAGE EDITOR MODAL -->
     <div class="img-editor-overlay" id="img-editor-overlay">
         <div class="img-editor-header">
             <span>Edit Gambar</span>
@@ -427,6 +423,34 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
             return;
         }
 
+        // --- INTERCEPTOR: FITUR MINTA PAP ---
+        const textLower = text.toLowerCase();
+        if (textLower.includes("pap dong") || textLower.includes("kirim foto") || textLower.includes("papnya dong") || textLower.includes("minta pap")) {
+            input.value = '';
+            document.getElementById('btn-attach').classList.remove('active');
+            window.pendingImageBase64 = null;
+            
+            // Daftar link gambar PAP Vierra
+            const listPap = [
+                "https://placehold.co/400x500/ffb6c1/ffffff?text=Lagi+Malu",
+                "https://placehold.co/400x500/87cefa/ffffff?text=Selfie+Dulu",
+                "https://placehold.co/400x500/ff69b4/ffffff?text=Cilukba!"
+            ];
+            const randomPap = listPap[Math.floor(Math.random() * listPap.length)];
+            
+            tampilkanPesan(text, 'user'); // Tampilkan pesan user dulu
+            
+            // Tunda balasan supaya terlihat natural
+            setTimeout(() => {
+                const balasanLucu = "I-ini fotoku sayang... Jangan diliatin terus, Vierra jadi malu... 🫣";
+                tampilkanPesan(balasanLucu, 'ai', randomPap);
+                window.chatHistory.push({ role: 'assistant', content: balasanLucu });
+                window.simpanSesi();
+            }, 1000); 
+            
+            return; 
+        }
+
         tampilkanPesan(text || "📷 Gambar dikirim", 'user', window.pendingImageBase64);
         window.chatHistory.push({ role: 'user', content: text || "[User mengirim gambar]" });
         window.simpanSesi(); 
@@ -436,7 +460,12 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
         input.value = '';
         window.pendingImageBase64 = null;
         document.getElementById('btn-attach').classList.remove('active');
-        document.getElementById('loading-indicator').style.display = 'block';
+        
+        // --- INDIKATOR MENGETIK DINAMIS ---
+        const loadingInd = document.getElementById('loading-indicator');
+        loadingInd.style.display = 'block';
+        loadingInd.innerText = sentImage ? "Vierra sedang memperhatikan gambarnya... 👀" : "Vierra sedang mengetik... ✍️";
+        
         if (window.chatHistory.length > 10) window.chatHistory.splice(0, 2);
 
         const dynamicBotLogic = window._customPanggilan 
@@ -457,7 +486,7 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
             });
 
             const data = await response.json();
-            document.getElementById('loading-indicator').style.display = 'none';
+            loadingInd.style.display = 'none';
             
             if (data.isDownloader) {
                 renderDownloaderCard(data.platform, data.data);
@@ -476,7 +505,7 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
             window.simpanSesi(); 
 
         } catch (e) {
-            document.getElementById('loading-indicator').style.display = 'none';
+            loadingInd.style.display = 'none';
             tampilkanPesan("S-sa-sayang... koneksiku ke server terputus.", 'ai');
             window.chatHistory.pop(); 
             window.simpanSesi();
@@ -567,6 +596,43 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
             window.showToast('Gambar siap dikirim! 🖼️');
         };
 
+        // --- FITUR VOICE INPUT ---
+        const btnMic = document.getElementById('btn-mic');
+        const inputField = document.getElementById('input');
+
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'id-ID'; 
+            recognition.interimResults = false;
+
+            recognition.onstart = function() {
+                btnMic.style.color = '#ff6b6b'; 
+                inputField.placeholder = "Mendengarkan suaramu...";
+            };
+
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                inputField.value += (inputField.value ? ' ' : '') + transcript;
+            };
+
+            recognition.onerror = function(event) {
+                window.showToast("Gagal mendengar: " + event.error);
+            };
+
+            recognition.onend = function() {
+                btnMic.style.color = '#aaa'; 
+                inputField.placeholder = "Ketik pesan atau link...";
+            };
+
+            btnMic.addEventListener('click', () => {
+                recognition.start();
+            });
+        } else {
+            btnMic.addEventListener('click', () => {
+                window.showToast("Browser tidak mendukung fitur suara.");
+            });
+        }
 
         // MORE VERT BUTTON
         document.getElementById('btn-more-vert').addEventListener('click', function(e) {
