@@ -160,6 +160,43 @@
         
         .toast { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: var(--new-send-bg); color: #fff; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 500; opacity: 0; visibility: hidden; transition: 0.3s; z-index: 3000; }
         .toast.show { opacity: 1; visibility: visible; top: 85px; }
+
+        /* MORE MENU (titik tiga) */
+        .more-menu-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2500; display: none; }
+        .more-menu-overlay.active { display: block; }
+        .more-menu { position: absolute; top: 56px; right: 12px; background: #1e2535; border-radius: 14px; min-width: 210px; padding: 8px 0; box-shadow: 0 8px 24px rgba(0,0,0,0.5); overflow: hidden; }
+        .more-menu-item { display: flex; align-items: center; gap: 12px; padding: 14px 18px; font-size: 15px; color: #fff; cursor: pointer; transition: background 0.15s; }
+        .more-menu-item:hover, .more-menu-item:active { background: rgba(255,255,255,0.07); }
+        .more-menu-item .material-symbols-rounded { font-size: 21px; color: #aaa; }
+
+        /* PERSONALISASI PANEL */
+        .persona-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.55); z-index: 3000; opacity: 0; visibility: hidden; transition: 0.3s; display: flex; align-items: flex-end; }
+        .persona-overlay.active { opacity: 1; visibility: visible; }
+        .persona-panel { background: var(--new-input-bg); width: 100%; border-top-left-radius: 24px; border-top-right-radius: 24px; padding: 24px 20px 40px; transform: translateY(100%); transition: 0.3s cubic-bezier(0.25,1,0.5,1); }
+        .persona-overlay.active .persona-panel { transform: translateY(0); }
+        .persona-title { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 20px; }
+        .persona-avatar-row { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+        .persona-avatar-preview { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--new-send-bg); flex-shrink: 0; }
+        .persona-label { font-size: 13px; color: #aaa; margin-bottom: 6px; }
+        .persona-input { width: 100%; background: #2a2a2a; border: none; border-radius: 10px; padding: 12px 14px; color: #fff; font-size: 15px; font-family: 'Roboto', sans-serif; outline: none; box-sizing: border-box; margin-bottom: 14px; }
+        .persona-color-row { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .persona-color-btn { width: 36px; height: 36px; border-radius: 50%; border: 3px solid transparent; cursor: pointer; transition: 0.2s; flex-shrink: 0; }
+        .persona-color-btn.selected { border-color: #fff; transform: scale(1.15); }
+        .persona-save-btn { width: 100%; padding: 14px; background: var(--new-send-bg); color: #fff; border: none; border-radius: 14px; font-size: 16px; font-weight: 600; cursor: pointer; font-family: 'Roboto', sans-serif; }
+
+        /* IMAGE EDITOR MODAL */
+        .img-editor-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 4000; opacity: 0; visibility: hidden; transition: 0.3s; display: flex; flex-direction: column; }
+        .img-editor-overlay.active { opacity: 1; visibility: visible; }
+        .img-editor-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; flex-shrink: 0; }
+        .img-editor-header span { font-size: 17px; font-weight: 600; color: #fff; }
+        .img-editor-close { background: none; border: none; color: #aaa; cursor: pointer; padding: 4px; display: flex; align-items: center; }
+        .img-editor-preview { flex: 1; display: flex; justify-content: center; align-items: center; overflow: hidden; padding: 0 16px; }
+        .img-editor-preview img { max-width: 100%; max-height: 100%; border-radius: 14px; object-fit: contain; }
+        .img-editor-bottom { padding: 16px 18px 36px; flex-shrink: 0; background: rgba(0,0,0,0.4); }
+        .img-caption-input { width: 100%; background: rgba(255,255,255,0.1); border: none; border-radius: 12px; padding: 12px 16px; color: #fff; font-size: 15px; font-family: 'Roboto', sans-serif; outline: none; box-sizing: border-box; margin-bottom: 14px; }
+        .img-caption-input::placeholder { color: rgba(255,255,255,0.4); }
+        .img-send-btn { width: 100%; padding: 14px; background: var(--new-send-bg); color: #fff; border: none; border-radius: 14px; font-size: 16px; font-weight: 600; cursor: pointer; font-family: 'Roboto', sans-serif; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .img-send-btn .material-symbols-rounded { font-size: 20px; }
     </style>
 </head>
 <body>
@@ -176,7 +213,7 @@
         <div class="header-icons">
             <span class="material-symbols-rounded">videocam</span>
             <span class="material-symbols-rounded" id="btn-delete" title="Hapus Sesi">delete</span>
-            <span class="material-symbols-rounded">more_vert</span>
+            <span class="material-symbols-rounded" id="btn-more-vert" style="cursor:pointer">more_vert</span>
         </div>
     </div>
 
@@ -218,6 +255,66 @@
         </div>
     </div>
     
+
+    <!-- MORE MENU OVERLAY -->
+    <div class="more-menu-overlay" id="more-menu-overlay" onclick="window.tutupMoreMenu()">
+        <div class="more-menu" onclick="event.stopPropagation()">
+            <div class="more-menu-item" onclick="window.bukaPersonalisasi()">
+                <span class="material-symbols-rounded">tune</span> Personalisasi Vierra
+            </div>
+            <div class="more-menu-item" onclick="window.tampilkanMenu(); window.tutupMoreMenu()">
+                <span class="material-symbols-rounded">apps</span> Daftar Fitur
+            </div>
+        </div>
+    </div>
+
+    <!-- PERSONALISASI PANEL -->
+    <div class="persona-overlay" id="persona-overlay" onclick="window.tutupPersonalisasi()">
+        <div class="persona-panel" onclick="event.stopPropagation()">
+            <div class="persona-title">✨ Personalisasi Vierra</div>
+            <div class="persona-avatar-row">
+                <img id="persona-avatar-preview" class="persona-avatar-preview" src="https://b.top4top.io/p_3802tsmbt0.jpg" alt="Avatar">
+                <div style="flex:1">
+                    <div class="persona-label">URL Foto Profil</div>
+                    <input class="persona-input" id="persona-avatar-url" placeholder="https://link-foto.jpg" style="margin-bottom:0">
+                </div>
+            </div>
+            <div class="persona-label">Nama Vierra</div>
+            <input class="persona-input" id="persona-name" placeholder="Vierra">
+            <div class="persona-label">Kamu dipanggil</div>
+            <input class="persona-input" id="persona-panggilan" placeholder="sayang">
+            <div class="persona-label">Warna Tema</div>
+            <div class="persona-color-row" id="persona-color-row">
+                <div class="persona-color-btn selected" style="background:#2842AD" data-color="#2842AD"></div>
+                <div class="persona-color-btn" style="background:#d14747" data-color="#d14747"></div>
+                <div class="persona-color-btn" style="background:#27ae60" data-color="#27ae60"></div>
+                <div class="persona-color-btn" style="background:#8e44ad" data-color="#8e44ad"></div>
+                <div class="persona-color-btn" style="background:#e67e22" data-color="#e67e22"></div>
+                <div class="persona-color-btn" style="background:#16a085" data-color="#16a085"></div>
+            </div>
+            <button class="persona-save-btn" onclick="window.simpanPersonalisasi()">💾 Simpan</button>
+        </div>
+    </div>
+
+    <!-- IMAGE EDITOR MODAL -->
+    <div class="img-editor-overlay" id="img-editor-overlay">
+        <div class="img-editor-header">
+            <span>Edit Gambar</span>
+            <button class="img-editor-close" onclick="window.tutupImgEditor()">
+                <span class="material-symbols-rounded" style="font-size:26px;color:#fff">close</span>
+            </button>
+        </div>
+        <div class="img-editor-preview">
+            <img id="img-editor-preview-img" src="" alt="Preview">
+        </div>
+        <div class="img-editor-bottom">
+            <input class="img-caption-input" id="img-caption-input" placeholder="Tambah caption... (opsional)">
+            <button class="img-send-btn" onclick="window.kirimGambarDariEditor()">
+                <span class="material-symbols-rounded">send</span> Kirim Gambar
+            </button>
+        </div>
+    </div>
+
     <div class="toast" id="toast">Teks disalin!</div>
 </div>
 
@@ -342,7 +439,10 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
         document.getElementById('loading-indicator').style.display = 'block';
         if (window.chatHistory.length > 10) window.chatHistory.splice(0, 2);
 
-        let payloadMessages = [ { role: 'system', content: botLogic }, ...window.chatHistory ];
+        const dynamicBotLogic = window._customPanggilan 
+                ? botLogic.replace(/sayang/g, window._customPanggilan)
+                : botLogic;
+            let payloadMessages = [ { role: 'system', content: dynamicBotLogic }, ...window.chatHistory ];
 
         try {
             const response = await fetch('/api/chat', {
@@ -428,25 +528,115 @@ Kamu juga punya rasa cinta ke aku, jadi kalo aku menyebutkan cewek lain kamu pas
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 800; // Ukuran aman untuk Vercel
+                    const MAX_WIDTH = 800;
                     const MAX_HEIGHT = 800;
                     let width = img.width; let height = img.height;
-
-                    if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } } 
+                    if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } }
                     else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
-                    
                     canvas.width = width; canvas.height = height;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
-                    
-                    window.pendingImageBase64 = canvas.toDataURL('image/jpeg', 0.6); // Kompresi 60%
-                    document.getElementById('btn-attach').classList.add('active'); 
-                    window.showToast("Gambar siap dikirim! 🖼️");
+                    window._tempImageBase64 = canvas.toDataURL('image/jpeg', 0.6);
+                    // Tampilkan image editor
+                    document.getElementById('img-editor-preview-img').src = window._tempImageBase64;
+                    document.getElementById('img-caption-input').value = '';
+                    document.getElementById('img-editor-overlay').classList.add('active');
                 };
                 img.src = event.target.result;
             };
             reader.readAsDataURL(file);
+            // Reset input supaya bisa pilih gambar yang sama lagi
+            this.value = '';
         });
+
+        // Tutup image editor
+        window.tutupImgEditor = function() {
+            document.getElementById('img-editor-overlay').classList.remove('active');
+            window._tempImageBase64 = null;
+        };
+
+        // Kirim gambar dari editor
+        window.kirimGambarDariEditor = function() {
+            if (!window._tempImageBase64) return;
+            const caption = document.getElementById('img-caption-input').value.trim();
+            window.pendingImageBase64 = window._tempImageBase64;
+            window._tempImageBase64 = null;
+            document.getElementById('img-editor-overlay').classList.remove('active');
+            document.getElementById('btn-attach').classList.add('active');
+            if (caption) document.getElementById('input').value = caption;
+            window.showToast('Gambar siap dikirim! 🖼️');
+        };
+
+
+        // MORE VERT BUTTON
+        document.getElementById('btn-more-vert').addEventListener('click', function(e) {
+            e.stopPropagation();
+            document.getElementById('more-menu-overlay').classList.toggle('active');
+        });
+        window.tutupMoreMenu = function() {
+            document.getElementById('more-menu-overlay').classList.remove('active');
+        };
+
+        // PERSONALISASI
+        window.bukaPersonalisasi = function() {
+            window.tutupMoreMenu();
+            const p = window._persona;
+            document.getElementById('persona-name').value = p.nama || '';
+            document.getElementById('persona-panggilan').value = p.panggilan || '';
+            document.getElementById('persona-avatar-url').value = p.avatar || '';
+            document.getElementById('persona-avatar-preview').src = p.avatar || 'https://b.top4top.io/p_3802tsmbt0.jpg';
+            // set selected color
+            document.querySelectorAll('.persona-color-btn').forEach(btn => {
+                btn.classList.toggle('selected', btn.dataset.color === p.warna);
+            });
+            document.getElementById('persona-overlay').classList.add('active');
+        };
+        window.tutupPersonalisasi = function() {
+            document.getElementById('persona-overlay').classList.remove('active');
+        };
+        // Live preview avatar URL
+        document.getElementById('persona-avatar-url').addEventListener('input', function() {
+            if (this.value) document.getElementById('persona-avatar-preview').src = this.value;
+        });
+        // Color picker
+        document.getElementById('persona-color-row').addEventListener('click', function(e) {
+            const btn = e.target.closest('.persona-color-btn');
+            if (!btn) return;
+            document.querySelectorAll('.persona-color-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+        });
+        window.simpanPersonalisasi = function() {
+            const nama = document.getElementById('persona-name').value.trim() || 'Vierra';
+            const panggilan = document.getElementById('persona-panggilan').value.trim() || 'sayang';
+            const avatar = document.getElementById('persona-avatar-url').value.trim();
+            const selectedColor = document.querySelector('.persona-color-btn.selected');
+            const warna = selectedColor ? selectedColor.dataset.color : '#2842AD';
+            window._persona = { nama, panggilan, avatar, warna };
+            localStorage.setItem('vierra_persona', JSON.stringify(window._persona));
+            window.terapkanPersona();
+            window.tutupPersonalisasi();
+            window.showToast('Tersimpan! ✨');
+        };
+        window.terapkanPersona = function() {
+            const p = window._persona;
+            // Nama di header
+            document.querySelector('.contact-name').textContent = p.nama || 'Vierra';
+            // Avatar di header
+            if (p.avatar) document.querySelector('.profile-pic').src = p.avatar;
+            // Warna tema (CSS variable)
+            if (p.warna) {
+                document.documentElement.style.setProperty('--new-send-bg', p.warna);
+                document.documentElement.style.setProperty('--bubble-user-bg', p.warna);
+            }
+            // Patch botLogic dengan panggilan custom
+            if (p.panggilan) {
+                window._customPanggilan = p.panggilan;
+            }
+        };
+        // Load persona dari localStorage
+        const savedPersona = localStorage.getItem('vierra_persona');
+        window._persona = savedPersona ? JSON.parse(savedPersona) : { nama: 'Vierra', panggilan: 'sayang', avatar: '', warna: '#2842AD' };
+        window.terapkanPersona();
 
         const chatContainer = document.getElementById('chat-messages');
         chatContainer.addEventListener('contextmenu', e => {
